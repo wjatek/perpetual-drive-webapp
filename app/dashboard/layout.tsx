@@ -1,12 +1,16 @@
 'use client'
 
+import FolderIcon from '@mui/icons-material/Folder'
+import HomeIcon from '@mui/icons-material/Home'
 import MenuIcon from '@mui/icons-material/Menu'
+import SpeakerNotesIcon from '@mui/icons-material/SpeakerNotes'
 import {
   Box,
   Drawer,
   IconButton,
   List,
   ListItem,
+  ListItemIcon,
   ListItemText,
   Toolbar,
   useMediaQuery,
@@ -49,15 +53,46 @@ export default function DashboardLayout({
           }}
         >
           <Toolbar />
-          <List>
-            <ListItem component="a" href={`/dashboard`}>
-              <ListItemText primary="Home" />
+          <List
+            sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
+          >
+            <ListItem
+              component="a"
+              href={`/dashboard`}
+              sx={{
+                '&:hover': { backgroundColor: 'primary.light', color: 'white' },
+              }}
+            >
+              <ListItemIcon>
+                <HomeIcon />
+              </ListItemIcon>
+              <ListItemText sx={{ color: 'text.primary' }} primary="Home" />
             </ListItem>
-            <ListItem component="a" href={`/dashboard/wall`}>
-              <ListItemText primary="Wall" />
+
+            <ListItem
+              component="a"
+              href={`/dashboard/wall`}
+              sx={{
+                '&:hover': { backgroundColor: 'primary.light', color: 'white' },
+              }}
+            >
+              <ListItemIcon>
+                <SpeakerNotesIcon />
+              </ListItemIcon>
+              <ListItemText sx={{ color: 'text.primary' }} primary="Wall" />
             </ListItem>
-            <ListItem component="a" href={`/dashboard/drive`}>
-              <ListItemText primary="Drive" />
+
+            <ListItem
+              component="a"
+              href={`/dashboard/drive`}
+              sx={{
+                '&:hover': { backgroundColor: 'primary.light', color: 'white' },
+              }}
+            >
+              <ListItemIcon>
+                <FolderIcon />
+              </ListItemIcon>
+              <ListItemText sx={{ color: 'text.primary' }} primary="Drive" />
             </ListItem>
           </List>
         </Drawer>
