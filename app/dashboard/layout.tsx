@@ -7,12 +7,14 @@ import {
   Drawer,
   IconButton,
   Toolbar,
-  useMediaQuery, Typography,
+  Typography,
+  useMediaQuery,
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import Image from 'next/image'
 import { useState } from 'react'
 import DrawerMenu from '../components/ui/DrawerMenu'
+import { ThemeToggleButton } from '../components/ui/ThemeToggleButton'
 
 const drawerWidth = 240
 
@@ -69,7 +71,9 @@ export default function DashboardLayout({
                 style={{ marginTop: 8 }}
               />
             </Box>
-            <Typography variant="h1" fontSize={18} padding={2}>Perpetual Drive</Typography>
+            <Typography variant="h1" fontSize={18} padding={2}>
+              Perpetual Drive
+            </Typography>
           </Toolbar>
           <Divider />
           <DrawerMenu />
@@ -88,6 +92,7 @@ export default function DashboardLayout({
               </IconButton>
             )}
             <Box sx={{ flexGrow: 1 }} />
+            <ThemeToggleButton />
           </Toolbar>
 
           <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
