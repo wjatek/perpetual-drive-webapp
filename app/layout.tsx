@@ -2,8 +2,9 @@ import '@fontsource/roboto/300.css'
 import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
-import type { Metadata } from 'next'
+import { CssBaseline } from '@mui/material'
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter'
+import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Perpetual Drive',
@@ -18,6 +19,7 @@ export default function RootLayout({
     <html lang="en">
       <head></head>
       <body>
+        <CssBaseline />
         <AppRouterCacheProvider>{children}</AppRouterCacheProvider>
       </body>
     </html>
