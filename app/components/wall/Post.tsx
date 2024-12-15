@@ -1,3 +1,5 @@
+'use client'
+
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
@@ -12,6 +14,7 @@ import {
   Typography,
 } from '@mui/material'
 import { format, formatDistanceToNow } from 'date-fns'
+import { useState } from 'react'
 
 type PostProps = {
   avatar: string
@@ -39,8 +42,20 @@ export default function Post({
   likes,
   comments,
 }: PostProps) {
+  const [liked, setLiked] = useState(false)
+  const [likesCount, setLikesCount] = useState(likes)
+
   const relativeTime = formatDistanceToNow(createdAt, { addSuffix: true })
   const fullDate = format(createdAt, 'yyyy-MM-dd HH:mm:ss')
+
+  const handleLikeClick = () => {
+    setLikesCount((prevCount) => (liked ? prevCount - 1 : prevCount + 1))
+    setLiked((prevLiked) => !prevLiked)
+  }
+
+  const handleCommentsClick = () => {
+
+  }
 
   return (
     <Card sx={{ maxWidth: 800, margin: '16px auto', boxShadow: 3 }}>
@@ -79,12 +94,21 @@ export default function Post({
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-          <FavoriteBorderIcon fontSize="small" />
-          <Typography variant="body2">{likes}</Typography>
+          <IconButton onClick={handleLikeClick}>
+            <FavoriteBorderIcon
+              fontSize="small"
+              sx={{
+                color: liked ? 'red' : 'text.secondary',
+              }}
+            />
+          </IconButton>
+          <Typography variant="body2">{likesCount}</Typography>
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-          <ChatBubbleOutlineIcon fontSize="small" />
+          <IconButton onClick={handleCommentsClick}>
+            <ChatBubbleOutlineIcon fontSize="small" />
+          </IconButton>
           <Typography variant="body2">{comments}</Typography>
         </Box>
       </Box>
