@@ -3,12 +3,14 @@
 import MenuIcon from '@mui/icons-material/Menu'
 import {
   Box,
+  Divider,
   Drawer,
   IconButton,
   Toolbar,
-  useMediaQuery
+  useMediaQuery, Typography,
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
+import Image from 'next/image'
 import { useState } from 'react'
 import DrawerMenu from '../components/ui/DrawerMenu'
 
@@ -46,19 +48,35 @@ export default function DashboardLayout({
             },
           }}
         >
-          <Toolbar />
+          <Toolbar>
+            <Box
+              sx={{
+                width: 40,
+                height: 40,
+                borderRadius: '50%',
+                overflow: 'hidden',
+                backgroundColor: 'text.secondary',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Image
+                src="/images/logo.svg"
+                alt="Logo"
+                width={36}
+                height={36}
+                style={{ marginTop: 8 }}
+              />
+            </Box>
+            <Typography variant="h1" fontSize={18} padding={2}>Perpetual Drive</Typography>
+          </Toolbar>
+          <Divider />
           <DrawerMenu />
         </Drawer>
 
         <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-          <Toolbar
-            sx={{
-              position: isMobile ? 'fixed' : 'sticky',
-              top: 0,
-              width: '100%',
-              zIndex: 1,
-            }}
-          >
+          <Toolbar>
             {isMobile && (
               <IconButton
                 color="inherit"
