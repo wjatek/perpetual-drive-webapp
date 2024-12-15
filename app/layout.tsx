@@ -19,8 +19,10 @@ export default function RootLayout({
     <html lang="en">
       <head></head>
       <body>
-        <CssBaseline />
-        <AppRouterCacheProvider>{children}</AppRouterCacheProvider>
+        <AppRouterCacheProvider>
+          <CssBaseline />
+          {children}
+        </AppRouterCacheProvider>
       </body>
     </html>
   )
