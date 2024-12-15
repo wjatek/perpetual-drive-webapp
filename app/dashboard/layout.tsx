@@ -1,22 +1,16 @@
 'use client'
 
-import FolderIcon from '@mui/icons-material/Folder'
-import HomeIcon from '@mui/icons-material/Home'
 import MenuIcon from '@mui/icons-material/Menu'
-import SpeakerNotesIcon from '@mui/icons-material/SpeakerNotes'
 import {
   Box,
   Drawer,
   IconButton,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
   Toolbar,
-  useMediaQuery,
+  useMediaQuery
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { useState } from 'react'
+import DrawerMenu from '../components/ui/DrawerMenu'
 
 const drawerWidth = 240
 
@@ -35,7 +29,7 @@ export default function DashboardLayout({
 
   return (
     <Box>
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: 'flex', backgroundColor: '' }}>
         <Drawer
           variant={isMobile ? 'temporary' : 'permanent'}
           open={isMobile ? mobileOpen : true}
@@ -53,48 +47,7 @@ export default function DashboardLayout({
           }}
         >
           <Toolbar />
-          <List
-            sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
-          >
-            <ListItem
-              component="a"
-              href={`/dashboard`}
-              sx={{
-                '&:hover': { backgroundColor: 'primary.light', color: 'white' },
-              }}
-            >
-              <ListItemIcon>
-                <HomeIcon />
-              </ListItemIcon>
-              <ListItemText sx={{ color: 'text.primary' }} primary="Home" />
-            </ListItem>
-
-            <ListItem
-              component="a"
-              href={`/dashboard/wall`}
-              sx={{
-                '&:hover': { backgroundColor: 'primary.light', color: 'white' },
-              }}
-            >
-              <ListItemIcon>
-                <SpeakerNotesIcon />
-              </ListItemIcon>
-              <ListItemText sx={{ color: 'text.primary' }} primary="Wall" />
-            </ListItem>
-
-            <ListItem
-              component="a"
-              href={`/dashboard/drive`}
-              sx={{
-                '&:hover': { backgroundColor: 'primary.light', color: 'white' },
-              }}
-            >
-              <ListItemIcon>
-                <FolderIcon />
-              </ListItemIcon>
-              <ListItemText sx={{ color: 'text.primary' }} primary="Drive" />
-            </ListItem>
-          </List>
+          <DrawerMenu />
         </Drawer>
 
         <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
