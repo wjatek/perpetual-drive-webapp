@@ -4,7 +4,19 @@ import { Box, Grid2 } from '@mui/material'
 const items: {
   id: string
   name: string
-  type: 'folder' | 'pdf' | 'image' | 'video' | 'code' | 'file'
+  type:
+    | 'folder'
+    | 'pdf'
+    | 'image'
+    | 'video'
+    | 'code'
+    | 'file'
+    | 'text'
+    | 'audio'
+    | 'spreadsheet'
+    | 'archive'
+    | 'presentation'
+    | 'tab'
 }[] = [
   { id: '1', name: 'Documents', type: 'folder' },
   { id: '2', name: 'Music', type: 'folder' },
@@ -12,6 +24,12 @@ const items: {
   { id: '4', name: 'Video.mp4', type: 'video' },
   { id: '5', name: 'Image.jpg', type: 'image' },
   { id: '6', name: 'Script.js', type: 'code' },
+  { id: '7', name: 'Notes.txt', type: 'text' },
+  { id: '8', name: 'Podcast.mp3', type: 'audio' },
+  { id: '9', name: 'FinancialReport.xlsx', type: 'spreadsheet' },
+  { id: '10', name: 'Backup.zip', type: 'archive' },
+  { id: '11', name: 'Presentation.pptx', type: 'presentation' },
+  { id: '11', name: 'Tabs.gp7', type: 'tab' },
 ]
 
 export default function DrivePage() {

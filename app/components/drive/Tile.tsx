@@ -2,14 +2,20 @@
 
 import CodeIcon from '@mui/icons-material/Code'
 import DeleteIcon from '@mui/icons-material/Delete'
+import DescriptionIcon from '@mui/icons-material/Description'
 import DownloadIcon from '@mui/icons-material/Download'
 import EditIcon from '@mui/icons-material/Edit'
 import FolderIcon from '@mui/icons-material/Folder'
+import FolderZipIcon from '@mui/icons-material/FolderZip'
 import ImageIcon from '@mui/icons-material/Image'
 import InfoIcon from '@mui/icons-material/Info'
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile'
 import MovieIcon from '@mui/icons-material/Movie'
+import MusicNoteIcon from '@mui/icons-material/MusicNote'
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf'
+import PieChartIcon from '@mui/icons-material/PieChart'
+import TableViewIcon from '@mui/icons-material/TableView'
+import TuneIcon from '@mui/icons-material/Tune'
 import {
   Box,
   Card,
@@ -24,7 +30,19 @@ import { useState } from 'react'
 
 type TileProps = {
   name: string
-  type: 'folder' | 'pdf' | 'image' | 'video' | 'code' | 'file'
+  type:
+    | 'folder'
+    | 'pdf'
+    | 'image'
+    | 'video'
+    | 'code'
+    | 'file'
+    | 'text'
+    | 'audio'
+    | 'spreadsheet'
+    | 'archive'
+    | 'presentation'
+    | 'tab'
 }
 
 const getIcon = (type: string) => {
@@ -39,6 +57,18 @@ const getIcon = (type: string) => {
       return <MovieIcon sx={{ fontSize: 50, color: 'secondary.main' }} />
     case 'code':
       return <CodeIcon sx={{ fontSize: 50, color: 'info.main' }} />
+    case 'text':
+      return <DescriptionIcon sx={{ fontSize: 50, color: 'text.secondary' }} />
+    case 'audio':
+      return <MusicNoteIcon sx={{ fontSize: 50, color: 'warning.main' }} />
+    case 'spreadsheet':
+      return <TableViewIcon sx={{ fontSize: 50, color: 'success.dark' }} />
+    case 'archive':
+      return <FolderZipIcon sx={{ fontSize: 50, color: 'text.primary' }} />
+    case 'presentation':
+      return <PieChartIcon sx={{ fontSize: 50, color: 'secondary.dark' }} />
+    case 'tab':
+      return <TuneIcon sx={{ fontSize: 50, color: 'info.main' }} />
     default:
       return (
         <InsertDriveFileIcon sx={{ fontSize: 50, color: 'text.secondary' }} />
