@@ -10,6 +10,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  Collapse,
   IconButton,
   TextField,
   Tooltip,
@@ -24,7 +25,8 @@ type PostProps = {
   content: string
   createdAt: Date
   likes: number
-  comments: number
+  commentCount: number
+  comments: string[]
 }
 
 const getInitials = (username: string): string | undefined => {
@@ -42,12 +44,15 @@ export default function Post({
   content,
   createdAt,
   likes,
+  commentCount,
   comments,
 }: PostProps) {
   const [liked, setLiked] = useState(false)
   const [likesCount, setLikesCount] = useState(likes)
   const [commentText, setCommentText] = useState('')
-  const [commentList, setCommentList] = useState<string[]>([])
+  const [commentsCount, setCommentsCount] = useState(commentCount)
+  const [commentList, setCommentList] = useState<string[]>(comments || [])
+  const [commentsOpen, setCommentsOpen] = useState(false)
 
   const relativeTime = formatDistanceToNow(createdAt, { addSuffix: true })
   const fullDate = format(createdAt, 'yyyy-MM-dd HH:mm:ss')
@@ -57,7 +62,9 @@ export default function Post({
     setLiked((prevLiked) => !prevLiked)
   }
 
-  const handleCommentsClick = () => {}
+  const handleCommentsClick = () => {
+    setCommentsOpen((prevOpen) => !prevOpen)
+  }
 
   const handleCommentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCommentText(event.target.value)
@@ -66,7 +73,8 @@ export default function Post({
   const handleAddComment = () => {
     if (commentText.trim()) {
       setCommentList([...commentList, commentText])
-      setCommentText('') // Reset comment input field
+      setCommentText('')
+      setCommentsCount((prevCount) => prevCount + 1)
     }
   }
 
@@ -122,11 +130,11 @@ export default function Post({
           <IconButton onClick={handleCommentsClick}>
             <ChatBubbleOutlineIcon fontSize="small" />
           </IconButton>
-          <Typography variant="body2">{comments}</Typography>
+          <Typography variant="body2">{commentsCount}</Typography>
         </Box>
       </Box>
 
-      <Box sx={{ px: 2, py: 1 }}>
+      <Collapse in={commentsOpen} sx={{ px: 2 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <TextField
             fullWidth
@@ -153,7 +161,7 @@ export default function Post({
             </Box>
           ))}
         </Box>
-      </Box>
+      </Collapse>
     </Card>
   )
 }
