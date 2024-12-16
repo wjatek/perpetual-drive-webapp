@@ -11,6 +11,7 @@ import {
   CardContent,
   CardHeader,
   Collapse,
+  Divider,
   IconButton,
   TextField,
   Tooltip,
@@ -154,7 +155,12 @@ export default function Post({
         <Box sx={{ mt: 2 }}>
           {commentList.map((comment, index) => (
             <Box key={index} sx={{ mb: 1 }}>
-              <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+              <Divider />
+              <Typography
+                variant="body2"
+                sx={{ fontWeight: 'bold' }}
+                paddingTop={1}
+              >
                 {username}
               </Typography>
               <Typography variant="body2">{comment}</Typography>
