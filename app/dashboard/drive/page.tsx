@@ -29,7 +29,7 @@ const items: {
   { id: '9', name: 'FinancialReport.xlsx', type: 'spreadsheet' },
   { id: '10', name: 'Backup.zip', type: 'archive' },
   { id: '11', name: 'Presentation.pptx', type: 'presentation' },
-  { id: '11', name: 'Tabs.gp7', type: 'tab' },
+  { id: '12', name: 'Tabs.gp7', type: 'tab' },
 ]
 
 export default function DrivePage() {
