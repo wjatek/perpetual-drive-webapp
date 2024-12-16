@@ -3,6 +3,7 @@
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
+import SendIcon from '@mui/icons-material/Send'
 import {
   Avatar,
   Box,
@@ -10,6 +11,7 @@ import {
   CardContent,
   CardHeader,
   IconButton,
+  TextField,
   Tooltip,
   Typography,
 } from '@mui/material'
@@ -44,6 +46,8 @@ export default function Post({
 }: PostProps) {
   const [liked, setLiked] = useState(false)
   const [likesCount, setLikesCount] = useState(likes)
+  const [commentText, setCommentText] = useState('')
+  const [commentList, setCommentList] = useState<string[]>([])
 
   const relativeTime = formatDistanceToNow(createdAt, { addSuffix: true })
   const fullDate = format(createdAt, 'yyyy-MM-dd HH:mm:ss')
@@ -53,8 +57,17 @@ export default function Post({
     setLiked((prevLiked) => !prevLiked)
   }
 
-  const handleCommentsClick = () => {
+  const handleCommentsClick = () => {}
 
+  const handleCommentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCommentText(event.target.value)
+  }
+
+  const handleAddComment = () => {
+    if (commentText.trim()) {
+      setCommentList([...commentList, commentText])
+      setCommentText('') // Reset comment input field
+    }
   }
 
   return (
@@ -110,6 +123,35 @@ export default function Post({
             <ChatBubbleOutlineIcon fontSize="small" />
           </IconButton>
           <Typography variant="body2">{comments}</Typography>
+        </Box>
+      </Box>
+
+      <Box sx={{ px: 2, py: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <TextField
+            fullWidth
+            size="small"
+            label="Add a comment"
+            variant="outlined"
+            value={commentText}
+            onChange={handleCommentChange}
+            sx={{ flexGrow: 1 }}
+          />
+
+          <IconButton onClick={handleAddComment} disabled={!commentText.trim()}>
+            <SendIcon />
+          </IconButton>
+        </Box>
+
+        <Box sx={{ mt: 2 }}>
+          {commentList.map((comment, index) => (
+            <Box key={index} sx={{ mb: 1 }}>
+              <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                {username}
+              </Typography>
+              <Typography variant="body2">{comment}</Typography>
+            </Box>
+          ))}
         </Box>
       </Box>
     </Card>
