@@ -94,7 +94,7 @@ export function Tile({ name, type }: TileProps) {
   }
 
   return (
-    <Card sx={{ maxWidth: 200 }} onContextMenu={handleContextMenu}>
+    <Card sx={{ maxWidth: 200 }} onContextMenu={handleContextMenu} elevation={2}>
       <CardActionArea>
         <Box
           sx={{
