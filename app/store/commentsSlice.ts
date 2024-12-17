@@ -25,7 +25,7 @@ export const fetchComments = createAsyncThunk<Comment[], string>(
 
 export const createComment = createAsyncThunk<
   Comment,
-  { postId: string; comment: Omit<Comment, 'id' | 'createdAt'> }
+  { postId: string; comment: Pick<Comment, 'content'> }
 >('comments/createComment', async ({ postId, comment }) => {
   const response = await api.post<Comment>(`/posts/${postId}/comments`, comment)
   return response.data
