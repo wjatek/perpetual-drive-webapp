@@ -54,7 +54,7 @@ export default function LoginPage() {
           component="form"
           sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: 300 }}
         >
-          <Box display='flex' justifyContent='center' alignItems='center'>
+          <Box display="flex" justifyContent="center" alignItems="center">
             <Box
               sx={{
                 width: 40,
@@ -93,15 +93,25 @@ export default function LoginPage() {
             fullWidth
             onChange={(e) => setPassword(e.target.value)}
           />
-          <Button
-            variant="contained"
-            color="primary"
-            type="submit"
-            onClick={(e) => handleSubmit(e)}
-          >
-            Login
-          </Button>
-          <Typography color="error.main">{error}</Typography>
+          <Box position="relative">
+            <Button
+              variant="contained"
+              color="primary"
+              type="submit"
+              onClick={(e) => handleSubmit(e)}
+              fullWidth
+            >
+              Login
+            </Button>
+            <Typography
+              position="absolute"
+              textAlign="center"
+              width="100%"
+              color="error.main"
+            >
+              {error}
+            </Typography>
+          </Box>
         </Box>
       </Box>
       <Backdrop
