@@ -3,34 +3,46 @@ import api from './api'
 import { User } from './models'
 import { createSlice } from './createAppSlice'
 
-export const fetchUsers = createAsyncThunk<User[]>(
-  'users/fetchUsers',
-  async () => {
-    const response = await api.get<User[]>('/users')
+interface UsersState {
+  usersById: { [key: string]: User }
+  loading: { [key: string]: boolean }
+  error: string | null
+}
+
+const initialState: UsersState = {
+  usersById: {},
+  loading: {},
+  error: null,
+}
+
+export const fetchUser = createAsyncThunk<User, string>(
+  'users/fetchUser',
+  async (id) => {
+    const response = await api.get<User>(`/users/${id}`)
     return response.data
   }
 )
 
 const userSlice = createSlice({
   name: 'users',
-  initialState: {
-    list: [] as User[],
-    status: 'idle',
-    error: null as string | null,
-  },
+  initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchUsers.pending, (state) => {
-        state.status = 'loading'
+      .addCase(fetchUser.pending, (state, action) => {
+        const id = action.meta.arg
+        state.loading[id] = true
       })
-      .addCase(fetchUsers.fulfilled, (state, action) => {
-        state.status = 'succeeded'
-        state.list = action.payload
+      .addCase(fetchUser.fulfilled, (state, action) => {
+        const id = action.meta.arg
+        const user = action.payload
+        state.usersById[id] = user
+        state.loading[id] = false
       })
-      .addCase(fetchUsers.rejected, (state, action) => {
-        state.status = 'failed'
-        state.error = action.error.message || 'Failed to fetch users'
+      .addCase(fetchUser.rejected, (state, action) => {
+        const id = action.meta.arg
+        state.loading[id] = false
+        state.error = action.error.message || 'Failed to fetch comments'
       })
   },
 })

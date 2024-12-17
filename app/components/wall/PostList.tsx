@@ -1,11 +1,12 @@
 'use client'
 
 import { Post } from '@/app/store/models'
+import { Box, Skeleton, Typography } from '@mui/material'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchPosts } from '../../store/postsSlice'
 import { Dispatch, RootState } from '../../store/store'
-import Comments from './CommentList'
+import PostItem from './PostItem'
 
 export default function PostList() {
   const dispatch = useDispatch<Dispatch>()
@@ -25,31 +26,26 @@ export default function PostList() {
   }, [dispatch, status])
 
   if (status === 'loading') {
-    return <p>Loading posts...</p>
+    return (
+      <Box sx={{ margin: '16px auto', maxWidth: 800 }}>
+        <Skeleton variant="rounded" height={180} />
+      </Box>
+    )
   }
 
   if (status === 'failed') {
-    return <p>Error: {error}</p>
+    return (
+      <Box sx={{ margin: '16px auto', maxWidth: 800 }}>
+        <Typography color="text.secondary">Error: {error}</Typography>
+      </Box>
+    )
   }
 
   return (
-    <div>
-      <h1>Posts</h1>
-      <ul>
-        {posts.map((post: Post) => (
-          <li key={post.id}>
-            <strong>{post.content}</strong>
-            <br />
-            Author: {post.author?.name}
-            <br />
-            Likes: {post.likedBy?.length}
-            <br />
-            Comments: {commentsLoading[post.id] ? 'Loading...' : commentsByPostId[post.id]?.length}
-            <br />
-            <Comments postId={post.id} />
-          </li>
-        ))}
-      </ul>
-    </div>
+    <Box>
+      {posts.map((post: Post) => (
+        <PostItem post={post} key={post.id} />
+      ))}
+    </Box>
   )
 }

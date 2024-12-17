@@ -1,16 +1,28 @@
 'use client'
 
-import { useEffect } from 'react'
+import SendIcon from '@mui/icons-material/Send'
+import {
+  Box,
+  Divider,
+  IconButton,
+  Skeleton,
+  TextField,
+  Typography,
+} from '@mui/material'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchComments } from '../../store/commentsSlice'
 import { Comment } from '../../store/models'
 import { Dispatch, RootState } from '../../store/store'
+import CommentItem from './Comment'
 
 interface CommentsProps {
   postId: string
 }
 
-export default function Comments({ postId }: CommentsProps) {
+export default function CommentList({ postId }: CommentsProps) {
+  const [commentText, setCommentText] = useState('')
+
   const dispatch = useDispatch<Dispatch>()
   const { commentsByPostId, loading, error } = useSelector(
     (state: RootState) => state.comments
@@ -22,26 +34,57 @@ export default function Comments({ postId }: CommentsProps) {
     }
   }, [dispatch])
 
-  if (loading[postId]) {
-    return <p>Loading comments...</p>
+  const handleCommentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCommentText(event.target.value)
+  }
+
+  const handleAddComment = () => {
+    if (commentText.trim()) {
+      setCommentText('')
+      /** TODO */
+    }
   }
 
   if (error) {
-    return <p>Error: {error}</p>
+    return (
+      <Typography color="text.secondary">
+        Cannot load comments: {error}
+      </Typography>
+    )
   }
 
   const comments = commentsByPostId[postId] || []
 
   return (
-    <div>
-      <h3>Comments</h3>
-      <ul>
-        {comments.map((comment: Comment) => (
-          <li key={comment.id}>
-            <strong>{comment.author?.name}</strong>: {comment.content}
-          </li>
-        ))}
-      </ul>
-    </div>
+    <Box>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <TextField
+          fullWidth
+          size="small"
+          label="Add a comment"
+          variant="outlined"
+          value={commentText}
+          onChange={handleCommentChange}
+          sx={{ flexGrow: 1 }}
+        />
+
+        <IconButton onClick={handleAddComment} disabled={!commentText.trim()}>
+          <SendIcon />
+        </IconButton>
+      </Box>
+
+      <Box sx={{ mt: 2 }}>
+        {loading[postId] ? (
+          <Box>
+            <Divider />
+            <Skeleton height={60} />
+          </Box>
+        ) : (
+          comments.map((comment: Comment, index) => (
+            <CommentItem comment={comment} key={comment.id} />
+          ))
+        )}
+      </Box>
+    </Box>
   )
 }
