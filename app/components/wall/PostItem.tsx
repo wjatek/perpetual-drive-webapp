@@ -3,6 +3,7 @@
 import { Post } from '@/app/store/models'
 import { Dispatch, RootState } from '@/app/store/store'
 import { fetchUser } from '@/app/store/usersSlice'
+import { getInitials } from '@/app/utils/textUtils'
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
@@ -25,16 +26,6 @@ import CommentList from './CommentList'
 
 type PostItemProps = {
   post: Post
-}
-
-const getInitials = (username: string | undefined): string | undefined => {
-  if (!username) return '?'
-  const splitted = username.split(' ')
-  if (!splitted) return
-  return splitted.length > 1
-    ? splitted[0].charAt(0).toUpperCase() +
-        splitted.pop()?.charAt(0).toUpperCase()
-    : username.charAt(0).toUpperCase()
 }
 
 export default function PostItem({ post }: PostItemProps) {

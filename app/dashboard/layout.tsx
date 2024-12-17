@@ -15,6 +15,7 @@ import Image from 'next/image'
 import { useState } from 'react'
 import DrawerMenu from '../components/ui/DrawerMenu'
 import { ThemeToggleButton } from '../components/ui/ThemeToggleButton'
+import UserActions from '../components/ui/UserActions'
 
 const drawerWidth = 240
 
@@ -80,7 +81,17 @@ export default function DashboardLayout({
         </Drawer>
 
         <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-          <Toolbar>
+          <Toolbar />
+          <Toolbar
+            sx={(theme) => ({
+              position: 'fixed',
+              top: 0,
+              right: 0,
+              left: 0,
+              backgroundColor: 'background.default',
+              zIndex: theme.zIndex.drawer - 1
+            })}
+          >
             {isMobile && (
               <IconButton
                 color="inherit"
@@ -93,6 +104,7 @@ export default function DashboardLayout({
             )}
             <Box sx={{ flexGrow: 1 }} />
             <ThemeToggleButton />
+            <UserActions />
           </Toolbar>
 
           <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
