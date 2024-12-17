@@ -3,6 +3,18 @@ import api from './api'
 import { createSlice } from './createAppSlice'
 import { Comment } from './models'
 
+interface CommentsState {
+  commentsByPostId: { [key: string]: Comment[] }
+  loading: { [key: string]: boolean }
+  error: string | null
+}
+
+const initialState: CommentsState = {
+  commentsByPostId: {},
+  loading: {},
+  error: null,
+}
+
 export const fetchComments = createAsyncThunk<Comment[], string>(
   'comments/fetchComments',
   async (postId) => {
@@ -21,28 +33,28 @@ export const createComment = createAsyncThunk<
 
 const commentSlice = createSlice({
   name: 'comments',
-  initialState: {
-    list: [] as Comment[],
-    status: 'idle',
-    error: null as string | null,
-  },
+  initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchComments.pending, (state) => {
-        state.status = 'loading'
+      .addCase(fetchComments.pending, (state, action) => {
+        const postId = action.meta.arg
+        state.loading[postId] = true
       })
       .addCase(fetchComments.fulfilled, (state, action) => {
-        state.status = 'succeeded'
-        state.list = action.payload
+        const postId = action.meta.arg
+        const comments = action.payload
+        state.commentsByPostId[postId] = comments
+        state.loading[postId] = false
       })
       .addCase(fetchComments.rejected, (state, action) => {
-        state.status = 'failed'
+        const postId = action.meta.arg
+        state.loading[postId] = false
         state.error = action.error.message || 'Failed to fetch comments'
       })
-      .addCase(createComment.fulfilled, (state, action) => {
-        state.list.push(action.payload)
-      })
+    // .addCase(createComment.fulfilled, (state, action) => {
+    //   state.list.push(action.payload)
+    // })
   },
 })
 

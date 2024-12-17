@@ -1,10 +1,11 @@
 'use client'
 
+import { Post } from '@/app/store/models'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchPosts } from '../../store/postsSlice'
 import { Dispatch, RootState } from '../../store/store'
-import { Post } from '@/app/store/models'
+import Comments from './CommentList'
 
 export default function PostList() {
   const dispatch = useDispatch<Dispatch>()
@@ -13,6 +14,9 @@ export default function PostList() {
     status,
     error,
   } = useSelector((state: RootState) => state.posts)
+  const { commentsByPostId, loading: commentsLoading } = useSelector(
+    (state: RootState) => state.comments
+  )
 
   useEffect(() => {
     if (status === 'idle') {
@@ -40,7 +44,9 @@ export default function PostList() {
             <br />
             Likes: {post.likedBy?.length}
             <br />
-            Comments: {post.comments?.length}
+            Comments: {commentsLoading[post.id] ? 'Loading...' : commentsByPostId[post.id]?.length}
+            <br />
+            <Comments postId={post.id} />
           </li>
         ))}
       </ul>

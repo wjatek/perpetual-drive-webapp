@@ -1,15 +1,19 @@
 import type { Action, ThunkAction } from '@reduxjs/toolkit'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
-import { default as postsReducer, default as postsSlice } from './postsSlice'
+import commentsSlice from './commentsSlice'
+import postsSlice from './postsSlice'
+import usersSlice from './usersSlice'
 
-const rootReducer = combineReducers(postsSlice)
+const rootReducer = combineReducers({
+  posts: postsSlice,
+  comments: commentsSlice,
+  users: usersSlice,
+})
 export type RootState = ReturnType<typeof rootReducer>
 
 export const makeStore = () => {
   return configureStore({
-    reducer: {
-      posts: postsReducer,
-    },
+    reducer: rootReducer,
   })
 }
 
