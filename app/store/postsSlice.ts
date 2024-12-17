@@ -1,102 +1,61 @@
-import { PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
+import { createAsyncThunk } from '@reduxjs/toolkit'
 import api from './api'
 import { createSlice } from './createAppSlice'
+import { Post } from './models'
 
-interface Comment {
-  id: string
-  postId: string
-  content: string
-}
+export const fetchPosts = createAsyncThunk<Post[]>(
+  'posts/fetchPosts',
+  async () => {
+    const response = await api.get<Post[]>('/posts')
+    return response.data
+  }
+)
 
-interface Post {
-  id: string
-  title: string
-  content: string
-  comments: Comment[]
-}
-
-interface PostsState {
-  posts: Post[]
-  loading: boolean
-  error: string | null
-}
-
-const initialState: PostsState = {
-  posts: [],
-  loading: false,
-  error: null,
-}
-
-export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
-  const response = await api.get<Post[]>('/posts')
+export const createPost = createAsyncThunk<
+  Post,
+  Omit<Post, 'id' | 'createdAt'>
+>('posts/createPost', async (post) => {
+  const response = await api.post<Post>('/posts', post)
   return response.data
 })
 
-export const fetchComments = createAsyncThunk(
-  'posts/fetchComments',
-  async (postId: string) => {
-    const response = await api.get<Comment[]>(`/posts/${postId}/comments`)
-    return { postId, comments: response.data }
-  }
-)
-
-export const createPost = createAsyncThunk(
-  'posts/createPost',
-  async (newPost: { title: string; content: string }) => {
-    const response = await api.post<Post>('/posts', newPost)
+export const likePost = createAsyncThunk<Post, { postId: string }>(
+  'posts/likePost',
+  async ({ postId }) => {
+    const response = await api.post<Post>(`/posts/${postId}/like`)
     return response.data
   }
 )
 
-export const addComment = createAsyncThunk(
-  'posts/addComment',
-  async (newComment: { postId: string; content: string }) => {
-    const response = await api.post<Comment>(
-      `/posts/${newComment.postId}/comments`,
-      newComment
-    )
-    return response.data
-  }
-)
-
-const postsSlice = createSlice({
+const postSlice = createSlice({
   name: 'posts',
-  initialState,
+  initialState: {
+    list: [] as Post[],
+    status: 'idle',
+    error: null as string | null,
+  },
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchPosts.pending, (state) => {
-        state.loading = true
+        state.status = 'loading'
       })
-      .addCase(fetchPosts.fulfilled, (state, action: PayloadAction<Post[]>) => {
-        state.loading = false
-        state.posts = action.payload.map((post) => ({ ...post, comments: [] }))
+      .addCase(fetchPosts.fulfilled, (state, action) => {
+        state.status = 'succeeded'
+        state.list = action.payload
       })
       .addCase(fetchPosts.rejected, (state, action) => {
-        state.loading = false
+        state.status = 'failed'
         state.error = action.error.message || 'Failed to fetch posts'
       })
-      .addCase(fetchComments.fulfilled, (state, action) => {
-        const { postId, comments } = action.payload
-        const post = state.posts.find((p) => p.id === postId)
-        if (post) {
-          post.comments = comments
-        }
+      .addCase(createPost.fulfilled, (state, action) => {
+        state.list.push(action.payload)
       })
-      .addCase(createPost.fulfilled, (state, action: PayloadAction<Post>) => {
-        state.posts.push({ ...action.payload, comments: [] })
+      .addCase(likePost.fulfilled, (state, action) => {
+        const post = state.list.find((p) => p.id === action.payload.id)
+        if (post) post.likedBy = action.payload.likedBy
       })
-      .addCase(
-        addComment.fulfilled,
-        (state, action: PayloadAction<Comment>) => {
-          const comment = action.payload
-          const post = state.posts.find((p) => p.id === comment.postId)
-          if (post) {
-            post.comments.push(comment)
-          }
-        }
-      )
   },
 })
 
-export default postsSlice.reducer
+export default postSlice.reducer
