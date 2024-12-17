@@ -3,6 +3,7 @@
 import SendIcon from '@mui/icons-material/Send'
 import {
   Box,
+  CircularProgress,
   Divider,
   IconButton,
   Skeleton,
@@ -11,7 +12,7 @@ import {
 } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchComments } from '../../store/commentsSlice'
+import { createComment, fetchComments } from '../../store/commentsSlice'
 import { Comment } from '../../store/models'
 import { Dispatch, RootState } from '../../store/store'
 import CommentItem from './Comment'
@@ -22,6 +23,7 @@ interface CommentsProps {
 
 export default function CommentList({ postId }: CommentsProps) {
   const [commentText, setCommentText] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const dispatch = useDispatch<Dispatch>()
   const { commentsByPostId, loading, error } = useSelector(
@@ -38,10 +40,20 @@ export default function CommentList({ postId }: CommentsProps) {
     setCommentText(event.target.value)
   }
 
-  const handleAddComment = () => {
+  const handleAddComment = async () => {
     if (commentText.trim()) {
-      setCommentText('')
-      /** TODO */
+      setIsSubmitting(true)
+
+      try {
+        await dispatch(
+          createComment({ postId, comment: { content: commentText } })
+        )
+        setCommentText('')
+      } catch (error) {
+        console.error('Error adding comment:', error)
+      } finally {
+        setIsSubmitting(false)
+      }
     }
   }
 
@@ -66,10 +78,11 @@ export default function CommentList({ postId }: CommentsProps) {
           value={commentText}
           onChange={handleCommentChange}
           sx={{ flexGrow: 1 }}
+          disabled={isSubmitting}
         />
 
-        <IconButton onClick={handleAddComment} disabled={!commentText.trim()}>
-          <SendIcon />
+        <IconButton onClick={handleAddComment} disabled={!commentText.trim() || isSubmitting}>
+          {isSubmitting ? <CircularProgress size={24} /> : <SendIcon />}
         </IconButton>
       </Box>
 

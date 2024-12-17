@@ -7,12 +7,20 @@ interface CommentsState {
   commentsByPostId: { [key: string]: Comment[] }
   loading: { [key: string]: boolean }
   error: string | null
+  addCommentStatus: {
+    loading: boolean
+    error: string | null
+  }
 }
 
 const initialState: CommentsState = {
   commentsByPostId: {},
   loading: {},
   error: null,
+  addCommentStatus: {
+    loading: false,
+    error: null,
+  },
 }
 
 export const fetchComments = createAsyncThunk<Comment[], string>(
@@ -52,9 +60,23 @@ const commentSlice = createSlice({
         state.loading[postId] = false
         state.error = action.error.message || 'Failed to fetch comments'
       })
-    // .addCase(createComment.fulfilled, (state, action) => {
-    //   state.list.push(action.payload)
-    // })
+      .addCase(createComment.pending, (state) => {
+        state.addCommentStatus.loading = true
+        state.addCommentStatus.error = null
+      })
+      .addCase(createComment.fulfilled, (state, action) => {
+        const { postId } = action.payload
+        if (!state.commentsByPostId[postId]) {
+          state.commentsByPostId[postId] = []
+        }
+        state.commentsByPostId[postId].push(action.payload)
+        state.addCommentStatus.loading = false
+      })
+      .addCase(createComment.rejected, (state, action) => {
+        state.addCommentStatus.loading = false
+        state.addCommentStatus.error =
+          action.error.message || 'Failed to add comment'
+      })
   },
 })
 
