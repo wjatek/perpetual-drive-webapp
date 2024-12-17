@@ -3,6 +3,7 @@ import { setupListeners } from '@reduxjs/toolkit/query'
 import type { ReactNode } from 'react'
 import { useEffect, useRef } from 'react'
 import { Provider } from 'react-redux'
+import { setStore } from './api'
 import type { Store } from './store'
 import { makeStore } from './store'
 
@@ -15,6 +16,7 @@ export const StoreProvider = ({ children }: Props) => {
 
   if (!storeRef.current) {
     storeRef.current = makeStore()
+    setStore(storeRef.current)
   }
 
   useEffect(() => {

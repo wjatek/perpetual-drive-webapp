@@ -3,8 +3,10 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import commentsSlice from './commentsSlice'
 import postsSlice from './postsSlice'
 import usersSlice from './usersSlice'
+import authSlice from './authSlice'
 
 const rootReducer = combineReducers({
+  auth: authSlice,
   posts: postsSlice,
   comments: commentsSlice,
   users: usersSlice,

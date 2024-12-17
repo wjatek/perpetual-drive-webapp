@@ -1,7 +1,7 @@
-import { createAsyncThunk } from '@reduxjs/toolkit'
+import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import api from './api'
-import { User } from './models'
 import { createSlice } from './createAppSlice'
+import { User } from './models'
 
 interface UsersState {
   usersById: { [key: string]: User }
@@ -23,10 +23,14 @@ export const fetchUser = createAsyncThunk<User, string>(
   }
 )
 
-const userSlice = createSlice({
+const usersSlice = createSlice({
   name: 'users',
   initialState,
-  reducers: {},
+  reducers: {
+    addUser: (state, action: PayloadAction<User>) => {
+      state.usersById[action.payload.id] = action.payload
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchUser.pending, (state, action) => {
@@ -47,4 +51,5 @@ const userSlice = createSlice({
   },
 })
 
-export default userSlice.reducer
+export const { addUser } = usersSlice.actions
+export default usersSlice.reducer
