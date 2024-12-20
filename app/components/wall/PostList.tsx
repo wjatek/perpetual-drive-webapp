@@ -1,7 +1,8 @@
 'use client'
 
 import { Post } from '@/app/store/models'
-import { Box, Skeleton, Typography } from '@mui/material'
+import { Refresh } from '@mui/icons-material'
+import { Box, IconButton, Skeleton, Typography } from '@mui/material'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchPosts } from '../../store/postsSlice'
@@ -25,27 +26,36 @@ export default function PostList() {
     }
   }, [dispatch, status])
 
-  if (status === 'loading') {
-    return (
-      <Box sx={{ margin: '16px auto', maxWidth: 800 }}>
-        <Skeleton variant="rounded" height={180} />
-      </Box>
-    )
-  }
-
-  if (status === 'failed') {
-    return (
-      <Box sx={{ margin: '16px auto', maxWidth: 800 }}>
-        <Typography color="text.secondary">Error: {error}</Typography>
-      </Box>
-    )
+  const handleRefreshClick = () => {
+    dispatch(fetchPosts())
   }
 
   return (
-    <Box>
-      {posts.map((post: Post) => (
-        <PostItem post={post} key={post.id} />
-      ))}
+    <Box sx={{ margin: '16px auto', maxWidth: 800 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <Box sx={{ flexGrow: 1 }} />
+        <IconButton
+          onClick={handleRefreshClick}
+          disabled={status === 'loading'}
+        >
+          <Refresh fontSize="small" />
+        </IconButton>
+      </Box>
+      {status === 'loading' &&
+        Array.from({ length: posts.length }).map((_, index) => (
+          <Skeleton variant="rounded" height={180} sx={{ marginY: 2 }} key={index} />
+        ))}
+      {status === 'failed' && (
+        <Typography color="text.secondary">Error: {error}</Typography>
+      )}
+      {status === 'succeeded' &&
+        posts.map((post: Post) => <PostItem post={post} key={post.id} />)}
     </Box>
   )
 }
