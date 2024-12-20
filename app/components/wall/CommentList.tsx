@@ -1,5 +1,4 @@
 'use client'
-
 import SendIcon from '@mui/icons-material/Send'
 import {
   Box,
@@ -10,6 +9,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
+import { unwrapResult } from '@reduxjs/toolkit'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { createComment, fetchComments } from '../../store/commentsSlice'
@@ -45,16 +45,13 @@ export default function CommentList({ postId }: CommentsProps) {
       setIsSubmitting(true)
 
       try {
-        await dispatch(
+        const resultAction = await dispatch(
           createComment({ postId, comment: { content: commentText } })
         )
-        if (!addCommentStatus.error) {
-          setCommentText('')
-        } else {
-          console.error('Error adding comment: ', addCommentStatus.error)
-        }
+        unwrapResult(resultAction)
+        setCommentText('')
       } catch (error) {
-        console.error('Dispatch error: ', error)
+        console.error('Error adding comment: ', error)
       } finally {
         setIsSubmitting(false)
       }

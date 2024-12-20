@@ -3,6 +3,26 @@ import api from './api'
 import { createSlice } from './createAppSlice'
 import { Post } from './models'
 
+interface PostsState {
+  list: Post[]
+  status: string // TODO change to loading flag
+  error: string | null
+  addPostStatus: {
+    loading: boolean
+    error: string | null
+  }
+}
+
+const initialState: PostsState = {
+  list: [],
+  status: 'idle',
+  error: null,
+  addPostStatus: {
+    loading: false,
+    error: null,
+  },
+}
+
 export const fetchPosts = createAsyncThunk<Post[]>(
   'posts/fetchPosts',
   async () => {
@@ -13,7 +33,7 @@ export const fetchPosts = createAsyncThunk<Post[]>(
 
 export const createPost = createAsyncThunk<
   Post,
-  Omit<Post, 'id' | 'createdAt'>
+  Pick<Post, 'content'>
 >('posts/createPost', async (post) => {
   const response = await api.post<Post>('/posts', post)
   return response.data
@@ -29,11 +49,7 @@ export const likePost = createAsyncThunk<Post, { postId: string }>(
 
 const postSlice = createSlice({
   name: 'posts',
-  initialState: {
-    list: [] as Post[],
-    status: 'idle',
-    error: null as string | null,
-  },
+  initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -48,12 +64,22 @@ const postSlice = createSlice({
         state.status = 'failed'
         state.error = action.error.message || 'Failed to fetch posts'
       })
-      .addCase(createPost.fulfilled, (state, action) => {
-        state.list.push(action.payload)
-      })
       .addCase(likePost.fulfilled, (state, action) => {
         const post = state.list.find((p) => p.id === action.payload.id)
         if (post) post.likedBy = action.payload.likedBy
+      })
+      .addCase(createPost.pending, (state) => {
+        state.addPostStatus.loading = true
+        state.addPostStatus.error = null
+      })
+      .addCase(createPost.fulfilled, (state, action) => {
+        state.list.push(action.payload)
+        state.addPostStatus.loading = false
+      })
+      .addCase(createPost.rejected, (state, action) => {
+        state.addPostStatus.loading = false
+        state.addPostStatus.error =
+          action.error.message || 'Failed to create post'
       })
   },
 })
