@@ -26,7 +26,7 @@ export default function CommentList({ postId }: CommentsProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const dispatch = useDispatch<Dispatch>()
-  const { commentsByPostId, loading, error } = useSelector(
+  const { commentsByPostId, loading, error, addCommentStatus } = useSelector(
     (state: RootState) => state.comments
   )
 
@@ -48,9 +48,13 @@ export default function CommentList({ postId }: CommentsProps) {
         await dispatch(
           createComment({ postId, comment: { content: commentText } })
         )
-        setCommentText('')
+        if (!addCommentStatus.error) {
+          setCommentText('')
+        } else {
+          console.error('Error adding comment: ', addCommentStatus.error)
+        }
       } catch (error) {
-        console.error('Error adding comment:', error)
+        console.error('Dispatch error: ', error)
       } finally {
         setIsSubmitting(false)
       }
@@ -81,7 +85,10 @@ export default function CommentList({ postId }: CommentsProps) {
           disabled={isSubmitting}
         />
 
-        <IconButton onClick={handleAddComment} disabled={!commentText.trim() || isSubmitting}>
+        <IconButton
+          onClick={handleAddComment}
+          disabled={!commentText.trim() || isSubmitting}
+        >
           {isSubmitting ? <CircularProgress size={24} /> : <SendIcon />}
         </IconButton>
       </Box>
