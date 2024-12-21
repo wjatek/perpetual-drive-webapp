@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { createComment, fetchComments } from '../../store/commentsSlice'
 import { Comment } from '../../store/models'
 import { Dispatch, RootState } from '../../store/store'
-import CommentItem from './Comment'
+import CommentItem from './CommentItem'
 
 interface CommentsProps {
   postId: string

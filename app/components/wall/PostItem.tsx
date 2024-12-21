@@ -86,7 +86,7 @@ export default function PostItem({ post }: PostItemProps) {
         }
         title={getUsername(post.authorId) || <Skeleton width={100} />}
         subheader={
-          <Tooltip title={fullDate}>
+          <Tooltip title={fullDate} placement='right'>
             <span>{relativeTime}</span>
           </Tooltip>
         }
