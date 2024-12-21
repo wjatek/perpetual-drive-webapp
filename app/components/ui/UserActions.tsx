@@ -1,6 +1,6 @@
 'use client'
 import { logout } from '@/app/store/authSlice'
-import { RootState } from '@/app/store/store'
+import { Dispatch, RootState } from '@/app/store/store'
 import { getInitials } from '@/app/utils/textUtils'
 import { Logout, Settings } from '@mui/icons-material'
 import {
@@ -15,13 +15,14 @@ import {
 } from '@mui/material'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 export default function UserActions() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
   const router = useRouter()
   const { user } = useSelector((state: RootState) => state.auth)
+  const dispatch = useDispatch<Dispatch>()
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
@@ -35,8 +36,8 @@ export default function UserActions() {
 
   const handleSettingsClick = () => {}
 
-  const handleLogoutClick = () => {
-    logout()
+  const handleLogoutClick = async () => {
+    await dispatch(logout())
     router.replace('/login')
   }
 

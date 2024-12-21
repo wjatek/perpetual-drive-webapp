@@ -7,6 +7,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
+import { unwrapResult } from '@reduxjs/toolkit'
 import Image from 'next/image'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -17,28 +18,40 @@ import { Dispatch, RootState } from '../store/store'
 export default function LoginPage() {
   const [name, setName] = useState('')
   const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
   const dispatch = useDispatch<Dispatch>()
-  const { loading, error, isAuthenticated } = useSelector(
+  const { error, isAuthenticated } = useSelector(
     (state: RootState) => state.auth
   )
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!name || !password) {
+    if (!name || !password || loading) {
       return
     }
 
-    dispatch(loginUser({ name, password }))
+    setLoading(true)
+    try {
+      const resultAction = await dispatch(loginUser({ name, password }))
+      unwrapResult(resultAction)
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
     if (isAuthenticated) {
       const backTo = searchParams.get('backTo')
-      if (backTo) router.replace(backTo)
-      else router.replace('/dashboard')
+      if (backTo) {
+        router.replace(backTo)
+      } else {
+        router.replace('/dashboard')
+      }
     }
   }, [isAuthenticated, router])
 

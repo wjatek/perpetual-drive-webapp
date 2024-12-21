@@ -11,8 +11,8 @@ import {
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import Image from 'next/image'
-import { usePathname, useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { redirect, usePathname } from 'next/navigation'
+import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import DrawerMenu from '../components/ui/DrawerMenu'
 import { ThemeToggleButton } from '../components/ui/ThemeToggleButton'
@@ -29,17 +29,12 @@ export default function DashboardLayout({
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
   const [mobileOpen, setMobileOpen] = useState(false)
-  const router = useRouter()
   const currentRoute = usePathname()
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
   )
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      router.replace(`/login?backTo=${currentRoute}`)
-    }
-  }, [])
+  if (!isAuthenticated) return redirect(`/login?backTo=${currentRoute}`)
 
   const toggleDrawer = () => {
     setMobileOpen(!mobileOpen)
