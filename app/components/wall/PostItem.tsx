@@ -1,5 +1,4 @@
 'use client'
-
 import { Post } from '@/app/store/models'
 import { Dispatch, RootState } from '@/app/store/store'
 import { fetchUser } from '@/app/store/usersSlice'
@@ -94,7 +93,9 @@ export default function PostItem({ post }: PostItemProps) {
       />
 
       <CardContent>
-        <Typography variant="body1" sx={{ mt: 2, whiteSpace: 'pre-line' }}>{post.content}</Typography>
+        <Typography variant="body1" sx={{ mt: 2, whiteSpace: 'pre-line' }}>
+          {post.content}
+        </Typography>
       </CardContent>
 
       <Box

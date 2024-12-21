@@ -31,13 +31,13 @@ export const fetchPosts = createAsyncThunk<Post[]>(
   }
 )
 
-export const createPost = createAsyncThunk<
-  Post,
-  Pick<Post, 'content'>
->('posts/createPost', async (post) => {
-  const response = await api.post<Post>('/posts', post)
-  return response.data
-})
+export const createPost = createAsyncThunk<Post, Pick<Post, 'content'>>(
+  'posts/createPost',
+  async (post) => {
+    const response = await api.post<Post>('/posts', post)
+    return response.data
+  }
+)
 
 export const likePost = createAsyncThunk<Post, { postId: string }>(
   'posts/likePost',

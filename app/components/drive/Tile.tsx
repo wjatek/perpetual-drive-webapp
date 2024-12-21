@@ -1,5 +1,4 @@
 'use client'
-
 import CodeIcon from '@mui/icons-material/Code'
 import DeleteIcon from '@mui/icons-material/Delete'
 import DescriptionIcon from '@mui/icons-material/Description'
@@ -94,7 +93,11 @@ export function Tile({ name, type }: TileProps) {
   }
 
   return (
-    <Card sx={{ maxWidth: 200 }} onContextMenu={handleContextMenu} elevation={2}>
+    <Card
+      sx={{ maxWidth: 200 }}
+      onContextMenu={handleContextMenu}
+      elevation={2}
+    >
       <CardActionArea>
         <Box
           sx={{

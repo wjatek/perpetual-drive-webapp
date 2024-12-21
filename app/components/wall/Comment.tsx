@@ -1,28 +1,11 @@
 'use client'
-
-import { Comment, Post } from '@/app/store/models'
+import { Comment } from '@/app/store/models'
 import { Dispatch, RootState } from '@/app/store/store'
 import { fetchUser } from '@/app/store/usersSlice'
-import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline'
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
-import MoreVertIcon from '@mui/icons-material/MoreVert'
-import {
-  Avatar,
-  Box,
-  Card,
-  CardContent,
-  CardHeader,
-  Collapse,
-  Divider,
-  IconButton,
-  Skeleton,
-  Tooltip,
-  Typography,
-} from '@mui/material'
+import { Box, Divider, Skeleton, Typography } from '@mui/material'
 import { format, formatDistanceToNow } from 'date-fns'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import CommentList from './CommentList'
 
 type CommentItemProps = {
   comment: Comment
