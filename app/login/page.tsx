@@ -8,7 +8,7 @@ import {
   Typography,
 } from '@mui/material'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { loginUser } from '../store/authSlice'
@@ -22,6 +22,7 @@ export default function LoginPage() {
     (state: RootState) => state.auth
   )
   const router = useRouter()
+  const searchParams = useSearchParams()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -35,7 +36,9 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      router.push('/dashboard')
+      const backTo = searchParams.get('backTo')
+      if (backTo) router.replace(backTo)
+      else router.replace('/dashboard')
     }
   }, [isAuthenticated, router])
 

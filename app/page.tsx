@@ -1,5 +1,7 @@
-import Button from '@mui/material/Button'
+import { redirect } from 'next/navigation'
 
 export default function Page() {
-  return <Button variant="contained">Hello world</Button>
+  redirect('/login')
+
+  return <></>
 }

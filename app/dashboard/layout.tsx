@@ -1,5 +1,4 @@
 'use client'
-
 import MenuIcon from '@mui/icons-material/Menu'
 import {
   Box,
@@ -12,10 +11,13 @@ import {
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import Image from 'next/image'
-import { useState } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import DrawerMenu from '../components/ui/DrawerMenu'
 import { ThemeToggleButton } from '../components/ui/ThemeToggleButton'
 import UserActions from '../components/ui/UserActions'
+import { RootState } from '../store/store'
 
 const drawerWidth = 240
 
@@ -27,6 +29,17 @@ export default function DashboardLayout({
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
   const [mobileOpen, setMobileOpen] = useState(false)
+  const router = useRouter()
+  const currentRoute = usePathname()
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.auth.isAuthenticated
+  )
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.replace(`/login?backTo=${currentRoute}`)
+    }
+  }, [])
 
   const toggleDrawer = () => {
     setMobileOpen(!mobileOpen)
@@ -89,7 +102,7 @@ export default function DashboardLayout({
               right: 0,
               left: 0,
               backgroundColor: 'background.default',
-              zIndex: theme.zIndex.drawer - 1
+              zIndex: theme.zIndex.drawer - 1,
             })}
           >
             {isMobile && (
