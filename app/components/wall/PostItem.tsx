@@ -93,7 +93,7 @@ export default function PostItem({ post }: PostItemProps) {
       />
 
       <CardContent>
-        <Typography variant="body1" sx={{ mt: 2, whiteSpace: 'pre-line' }}>
+        <Typography variant="body1" sx={{ whiteSpace: 'pre-line' }}>
           {post.content}
         </Typography>
       </CardContent>
