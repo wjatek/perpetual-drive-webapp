@@ -1,9 +1,11 @@
 'use client'
 import { Post } from '@/app/store/models'
+import { toggleLike } from '@/app/store/postsSlice'
 import { Dispatch, RootState } from '@/app/store/store'
 import { fetchUser } from '@/app/store/usersSlice'
 import { getInitials } from '@/app/utils/textUtils'
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline'
+import FavoriteIcon from '@mui/icons-material/Favorite'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import {
@@ -18,6 +20,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
+import { unwrapResult } from '@reduxjs/toolkit'
 import { format, formatDistanceToNow } from 'date-fns'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -28,10 +31,11 @@ type PostItemProps = {
 }
 
 export default function PostItem({ post }: PostItemProps) {
-  const [liked, setLiked] = useState(false)
-  const [likesCount, setLikesCount] = useState(post.likedBy?.length || 0)
+  const [likeSubmitting, setLikeSubmitting] = useState(false)
+  const [hasLiked, setHasLiked] = useState(false)
   const [commentsOpen, setCommentsOpen] = useState(false)
   const dispatch = useDispatch<Dispatch>()
+  const currentUser = useSelector((state: RootState) => state.auth.user)
 
   const { commentsByPostId, loading: commentsLoading } = useSelector(
     (state: RootState) => state.comments
@@ -47,6 +51,13 @@ export default function PostItem({ post }: PostItemProps) {
     }
   }, [dispatch])
 
+  useEffect(() => {
+    if (post && currentUser) {
+      const isLiked = post.likedBy?.some((user) => user.id === currentUser.id)
+      setHasLiked(!!isLiked)
+    }
+  }, [post, currentUser])
+
   const getUsername = (userId: string): string | undefined => {
     if (userLoading[userId]) return
     return usersById[userId]?.name || 'Unknown User'
@@ -55,9 +66,17 @@ export default function PostItem({ post }: PostItemProps) {
   const relativeTime = formatDistanceToNow(post.createdAt, { addSuffix: true })
   const fullDate = format(post.createdAt, 'yyyy-MM-dd HH:mm:ss')
 
-  const handleLikeClick = () => {
-    setLikesCount((prevCount) => (liked ? prevCount - 1 : prevCount + 1))
-    setLiked((prevLiked) => !prevLiked)
+  const handleLikeClick = async () => {
+    setLikeSubmitting(true)
+
+    try {
+      const resultAction = await dispatch(toggleLike({ id: post.id }))
+      unwrapResult(resultAction)
+    } catch (error) {
+      console.error('Error liking post: ', error)
+    } finally {
+      setLikeSubmitting(false)
+    }
   }
 
   const handleCommentsClick = () => {
@@ -86,7 +105,7 @@ export default function PostItem({ post }: PostItemProps) {
         }
         title={getUsername(post.authorId) || <Skeleton width={100} />}
         subheader={
-          <Tooltip title={fullDate} placement='right'>
+          <Tooltip title={fullDate} placement="right">
             <span>{relativeTime}</span>
           </Tooltip>
         }
@@ -110,15 +129,24 @@ export default function PostItem({ post }: PostItemProps) {
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-          <IconButton onClick={handleLikeClick}>
-            <FavoriteBorderIcon
-              fontSize="small"
-              sx={{
-                color: liked ? 'red' : 'text.secondary',
-              }}
-            />
+          <IconButton onClick={handleLikeClick} disabled={likeSubmitting}>
+            {hasLiked || likeSubmitting ? (
+              <FavoriteIcon
+                fontSize="small"
+                sx={{
+                  color: hasLiked && !likeSubmitting ? 'red' : 'text.secondary',
+                }}
+              />
+            ) : (
+              <FavoriteBorderIcon
+                fontSize="small"
+                sx={{
+                  color: 'text.secondary',
+                }}
+              />
+            )}
           </IconButton>
-          <Typography variant="body2">{likesCount}</Typography>
+          <Typography variant="body2">{post.likedBy?.length || 0}</Typography>
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>

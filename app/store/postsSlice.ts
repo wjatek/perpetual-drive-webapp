@@ -11,6 +11,10 @@ interface PostsState {
     loading: boolean
     error: string | null
   }
+  likePostStatus: {
+    loading: boolean
+    error: string | null
+  }
 }
 
 const initialState: PostsState = {
@@ -18,6 +22,10 @@ const initialState: PostsState = {
   status: 'idle',
   error: null,
   addPostStatus: {
+    loading: false,
+    error: null,
+  },
+  likePostStatus: {
     loading: false,
     error: null,
   },
@@ -39,10 +47,10 @@ export const createPost = createAsyncThunk<Post, Pick<Post, 'content'>>(
   }
 )
 
-export const likePost = createAsyncThunk<Post, { postId: string }>(
-  'posts/likePost',
-  async ({ postId }) => {
-    const response = await api.post<Post>(`/posts/${postId}/like`)
+export const toggleLike = createAsyncThunk<Post, { id: string }>(
+  'posts/toggleLike',
+  async ({ id }) => {
+    const response = await api.post<Post>(`/posts/${id}/like`)
     return response.data
   }
 )
@@ -64,10 +72,7 @@ const postSlice = createSlice({
         state.status = 'failed'
         state.error = action.error.message || 'Failed to fetch posts'
       })
-      .addCase(likePost.fulfilled, (state, action) => {
-        const post = state.list.find((p) => p.id === action.payload.id)
-        if (post) post.likedBy = action.payload.likedBy
-      })
+
       .addCase(createPost.pending, (state) => {
         state.addPostStatus.loading = true
         state.addPostStatus.error = null
@@ -80,6 +85,26 @@ const postSlice = createSlice({
         state.addPostStatus.loading = false
         state.addPostStatus.error =
           action.error.message || 'Failed to create post'
+      })
+
+      .addCase(toggleLike.pending, (state) => {
+        state.likePostStatus.loading = true
+        state.likePostStatus.error = null
+      })
+      .addCase(toggleLike.fulfilled, (state, action) => {
+        const { id } = action.payload
+        const postIndex = state.list.findIndex((post) => post.id === id)
+        if (postIndex !== -1) {
+          state.list[postIndex] = action.payload
+        } else {
+          state.list.push(action.payload)
+        }
+        state.likePostStatus.loading = false
+      })
+      .addCase(toggleLike.rejected, (state, action) => {
+        state.likePostStatus.loading = false
+        state.likePostStatus.error =
+          action.error.message || 'Failed to like post'
       })
   },
 })
