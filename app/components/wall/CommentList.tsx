@@ -26,7 +26,7 @@ export default function CommentList({ postId }: CommentsProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const dispatch = useDispatch<Dispatch>()
-  const { commentsByPostId, loading, error, addCommentStatus } = useSelector(
+  const { commentsByPostId, loading, error } = useSelector(
     (state: RootState) => state.comments
   )
 

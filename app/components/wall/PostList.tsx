@@ -24,11 +24,7 @@ export default function PostList() {
     list: posts,
     status,
     error,
-    addPostStatus,
   } = useSelector((state: RootState) => state.posts)
-  const { commentsByPostId, loading: commentsLoading } = useSelector(
-    (state: RootState) => state.comments
-  )
 
   const [newPostContent, setNewPostContent] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
