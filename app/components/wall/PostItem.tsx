@@ -34,6 +34,7 @@ export default function PostItem({ post }: PostItemProps) {
   const [likeSubmitting, setLikeSubmitting] = useState(false)
   const [hasLiked, setHasLiked] = useState(false)
   const [commentsOpen, setCommentsOpen] = useState(false)
+  const [relativeDate, setRelativeDate] = useState<string>('')
   const dispatch = useDispatch<Dispatch>()
   const currentUser = useSelector((state: RootState) => state.auth.user)
 
@@ -63,8 +64,17 @@ export default function PostItem({ post }: PostItemProps) {
     return usersById[userId]?.name || 'Unknown User'
   }
 
-  const relativeTime = formatDistanceToNow(post.createdAt, { addSuffix: true })
   const fullDate = format(post.createdAt, 'yyyy-MM-dd HH:mm:ss')
+
+  useEffect(() => {
+    setRelativeDate(formatDistanceToNow(post.createdAt, { addSuffix: true }))
+
+    const intervalId = setInterval(() => {
+      setRelativeDate(formatDistanceToNow(post.createdAt, { addSuffix: true }))
+    }, 60000)
+
+    return () => clearInterval(intervalId)
+  }, [post.createdAt])
 
   const handleLikeClick = async () => {
     setLikeSubmitting(true)
@@ -106,7 +116,7 @@ export default function PostItem({ post }: PostItemProps) {
         title={getUsername(post.authorId) || <Skeleton width={100} />}
         subheader={
           <Tooltip title={fullDate} placement="right">
-            <span>{relativeTime}</span>
+            <span>{relativeDate}</span>
           </Tooltip>
         }
       />

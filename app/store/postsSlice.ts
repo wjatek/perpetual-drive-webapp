@@ -78,7 +78,7 @@ const postSlice = createSlice({
         state.addPostStatus.error = null
       })
       .addCase(createPost.fulfilled, (state, action) => {
-        state.list.push(action.payload)
+        state.list.unshift(action.payload)
         state.addPostStatus.loading = false
       })
       .addCase(createPost.rejected, (state, action) => {
