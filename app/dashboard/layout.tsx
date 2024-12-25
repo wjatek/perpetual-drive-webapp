@@ -1,7 +1,9 @@
 'use client'
 import MenuIcon from '@mui/icons-material/Menu'
 import {
+  Backdrop,
   Box,
+  CircularProgress,
   Divider,
   Drawer,
   IconButton,
@@ -11,13 +13,15 @@ import {
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import Image from 'next/image'
-import { redirect, usePathname } from 'next/navigation'
-import { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useRouter, usePathname } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import DrawerMenu from '../components/ui/DrawerMenu'
 import { ThemeToggleButton } from '../components/ui/ThemeToggleButton'
 import UserActions from '../components/ui/UserActions'
 import { RootState } from '../store/store'
+import { Dispatch } from '@/app/store/store';
+import { refreshAccessToken } from '../store/authSlice'
 
 const drawerWidth = 240
 
@@ -29,16 +33,47 @@ export default function DashboardLayout({
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
   const [mobileOpen, setMobileOpen] = useState(false)
+  const router = useRouter()
   const currentRoute = usePathname()
-  const isAuthenticated = useSelector(
-    (state: RootState) => state.auth.isAuthenticated
+  const dispatch = useDispatch<Dispatch>()
+  const { isAuthenticated, token, user, loading } = useSelector(
+    (state: RootState) => state.auth
   )
 
-  if (!isAuthenticated) return redirect(`/login?backTo=${currentRoute}`)
+  const autoLogin = async () => {
+    if (!isAuthenticated || !token || !user) {
+      try {
+        await dispatch(refreshAccessToken()).unwrap()
+      } catch (error) {
+        router.replace(`/login?backTo=${currentRoute}`)
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (!loading && (!isAuthenticated || !token || !user)) {
+      autoLogin()
+    }
+  }, [])
 
   const toggleDrawer = () => {
     setMobileOpen(!mobileOpen)
   }
+
+  if (!isAuthenticated)
+    return (
+      <Backdrop
+        sx={{ color: '#fff', zIndex: 999999 }}
+        open={true}
+        transitionDuration={{
+          appear: 0,
+          enter: 0,
+          exit: 500,
+        }}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    )
 
   return (
     <Box>

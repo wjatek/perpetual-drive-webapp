@@ -43,9 +43,8 @@ export const refreshAccessToken = createAsyncThunk(
     try {
       const response = await api.post('/refresh-token')
 
-      return response.data.accessToken
+      return response.data
     } catch (error: any) {
-      console.dir(error)
       return rejectWithValue('Failed to refresh token')
     }
   }
@@ -91,7 +90,8 @@ const authSlice = createSlice({
       })
       .addCase(refreshAccessToken.fulfilled, (state, action) => {
         state.loading = false
-        state.token = action.payload
+        state.user = action.payload.user
+        state.token = action.payload.accessToken
         state.isAuthenticated = true
       })
       .addCase(refreshAccessToken.rejected, (state) => {

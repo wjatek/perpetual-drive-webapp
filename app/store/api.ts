@@ -39,9 +39,14 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config
 
-    if (error.response?.status === 401 && !originalRequest._retry && store) {
+    if (
+      error.response?.status === 401 &&
+      originalRequest.url !== '/refresh-token' &&
+      !originalRequest._retry &&
+      store
+    ) {
       originalRequest._retry = true
-
+      debugger
       try {
         const resultAction = await store.dispatch(refreshAccessToken())
         const token = unwrapResult(resultAction)

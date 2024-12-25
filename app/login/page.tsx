@@ -19,8 +19,9 @@ export default function LoginPage() {
   const [name, setName] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
+  const [isLoginAttempted, setIsLoginAttempted] = useState(false)
   const dispatch = useDispatch<Dispatch>()
-  const { error, isAuthenticated } = useSelector(
+  const { error, isAuthenticated, token } = useSelector(
     (state: RootState) => state.auth
   )
   const router = useRouter()
@@ -45,7 +46,7 @@ export default function LoginPage() {
   }
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && token) {
       const backTo = searchParams.get('backTo')
       if (backTo) {
         router.replace(backTo)
@@ -53,7 +54,7 @@ export default function LoginPage() {
         router.replace('/dashboard')
       }
     }
-  }, [isAuthenticated, router, searchParams])
+  }, [isAuthenticated, token, router, searchParams])
 
   return (
     <>
@@ -133,6 +134,11 @@ export default function LoginPage() {
       <Backdrop
         sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
         open={loading}
+        transitionDuration={{
+          appear: 0,
+          enter: 0,
+          exit: 500,
+        }}
       >
         <CircularProgress color="inherit" />
       </Backdrop>
