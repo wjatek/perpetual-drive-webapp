@@ -7,6 +7,7 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter'
 import type { Metadata } from 'next'
 import { StoreProvider } from './store/StoreProvider'
 import { ThemeProvider } from './themeContext'
+import { Suspense } from 'react'
 
 export const metadata: Metadata = {
   title: 'Perpetual Drive',
@@ -21,14 +22,16 @@ export default function RootLayout({
     <html lang="en">
       <head></head>
       <body>
-        <StoreProvider>
-          <AppRouterCacheProvider>
-            <ThemeProvider>
-              <CssBaseline />
-              {children}
-            </ThemeProvider>
-          </AppRouterCacheProvider>
-        </StoreProvider>
+        <Suspense>
+          <StoreProvider>
+            <AppRouterCacheProvider>
+              <ThemeProvider>
+                <CssBaseline />
+                {children}
+              </ThemeProvider>
+            </AppRouterCacheProvider>
+          </StoreProvider>
+        </Suspense>
       </body>
     </html>
   )

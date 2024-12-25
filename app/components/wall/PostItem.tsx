@@ -50,7 +50,7 @@ export default function PostItem({ post }: PostItemProps) {
     if (!usersById[post.authorId] && !userLoading[post.authorId]) {
       dispatch(fetchUser(post.authorId))
     }
-  }, [dispatch])
+  }, [dispatch, post.authorId, userLoading, usersById])
 
   useEffect(() => {
     if (post && currentUser) {

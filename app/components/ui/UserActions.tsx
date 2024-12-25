@@ -1,5 +1,5 @@
 'use client'
-import { logout } from '@/app/store/authSlice'
+import { logoutUser } from '@/app/store/authSlice'
 import { Dispatch, RootState } from '@/app/store/store'
 import { getInitials } from '@/app/utils/textUtils'
 import { Logout, Settings } from '@mui/icons-material'
@@ -37,7 +37,7 @@ export default function UserActions() {
   const handleSettingsClick = () => {}
 
   const handleLogoutClick = async () => {
-    await dispatch(logout())
+    await dispatch(logoutUser())
     router.replace('/login')
   }
 

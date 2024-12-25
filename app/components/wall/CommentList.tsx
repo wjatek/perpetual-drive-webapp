@@ -34,7 +34,7 @@ export default function CommentList({ postId }: CommentsProps) {
     if (!commentsByPostId[postId] && !loading[postId]) {
       dispatch(fetchComments(postId))
     }
-  }, [dispatch])
+  }, [dispatch, commentsByPostId, loading, postId])
 
   const handleCommentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCommentText(event.target.value)
@@ -97,7 +97,7 @@ export default function CommentList({ postId }: CommentsProps) {
             <Skeleton height={60} />
           </Box>
         ) : (
-          comments.map((comment: Comment, index) => (
+          comments.map((comment: Comment) => (
             <CommentItem comment={comment} key={comment.id} />
           ))
         )}

@@ -53,7 +53,7 @@ export default function LoginPage() {
         router.replace('/dashboard')
       }
     }
-  }, [isAuthenticated, router])
+  }, [isAuthenticated, router, searchParams])
 
   return (
     <>

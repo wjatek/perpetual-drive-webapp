@@ -23,7 +23,7 @@ export default function CommentItem({ comment }: CommentItemProps) {
     if (!usersById[comment.authorId] && !userLoading[comment.authorId]) {
       dispatch(fetchUser(comment.authorId))
     }
-  }, [dispatch])
+  }, [dispatch, comment.authorId, usersById, userLoading])
 
   const getUsername = (userId: string): string | undefined => {
     if (userLoading[userId]) return
