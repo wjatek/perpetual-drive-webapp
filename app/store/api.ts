@@ -1,6 +1,9 @@
 import { unwrapResult } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { refreshAccessToken } from './authSlice'
+import apiConfig from '../config'
+
+const API_BASE_URL = apiConfig.apiBaseUrl
 
 let store: any
 
@@ -9,7 +12,7 @@ export const setStore = (reduxStore: any) => {
 }
 
 const api = axios.create({
-  baseURL: 'http://localhost:3001',
+  baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
