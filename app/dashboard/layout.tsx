@@ -19,9 +19,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import DrawerMenu from '../../components/ui/DrawerMenu'
 import { ThemeToggleButton } from '../../components/ui/ThemeToggleButton'
 import UserActions from '../../components/ui/UserActions'
-import { RootState } from '../../store/store'
-import { Dispatch } from '@/store/store';
-import { refreshAccessToken } from '../../store/slices/authSlice'
+import { RootState } from '../../redux/store'
+import { Dispatch } from '@/redux/store';
+import { refreshAccessToken } from '../../redux/slices/authSlice'
 
 const drawerWidth = 240
 

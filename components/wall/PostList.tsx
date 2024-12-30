@@ -14,8 +14,8 @@ import {
 import { unwrapResult } from '@reduxjs/toolkit'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { createPost, fetchPosts } from '../../store/slices/postsSlice'
-import { Dispatch, RootState } from '../../store/store'
+import { createPost, fetchPosts } from '../../redux/slices/postsSlice'
+import { Dispatch, RootState } from '../../redux/store'
 import PostItem from './PostItem'
 
 export default function PostList() {

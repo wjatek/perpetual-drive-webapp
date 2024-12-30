@@ -1,6 +1,6 @@
 'use client'
-import { logoutUser } from '@/store/slices/authSlice'
-import { Dispatch, RootState } from '@/store/store'
+import { logoutUser } from '@/redux/slices/authSlice'
+import { Dispatch, RootState } from '@/redux/store'
 import { getInitials } from '@/utils/textUtils'
 import { Logout, Settings } from '@mui/icons-material'
 import {
