@@ -5,9 +5,9 @@ import '@fontsource/roboto/700.css'
 import { CssBaseline } from '@mui/material'
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter'
 import type { Metadata } from 'next'
-import { StoreProvider } from '../redux/StoreProvider'
-import { ThemeProvider } from '../context/themeContext'
 import { Suspense } from 'react'
+import { ThemeProvider } from '../context/themeContext'
+import { StoreProvider } from '../redux/StoreProvider'
 
 export const metadata: Metadata = {
   title: 'Perpetual Drive',

@@ -1,5 +1,4 @@
 'use client'
-
 import { ThemeProvider as MUIThemeProvider } from '@mui/material/styles'
 import { ReactNode, createContext, useContext, useState } from 'react'
 import { darkTheme, lightTheme } from '../config/theme'
