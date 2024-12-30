@@ -1,7 +1,7 @@
 'use client'
-import { logoutUser } from '@/app/store/authSlice'
-import { Dispatch, RootState } from '@/app/store/store'
-import { getInitials } from '@/app/utils/textUtils'
+import { logoutUser } from '@/store/slices/authSlice'
+import { Dispatch, RootState } from '@/store/store'
+import { getInitials } from '@/utils/textUtils'
 import { Logout, Settings } from '@mui/icons-material'
 import {
   Avatar,

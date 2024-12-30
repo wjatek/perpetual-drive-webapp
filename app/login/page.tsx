@@ -12,8 +12,8 @@ import Image from 'next/image'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { loginUser } from '../store/authSlice'
-import { Dispatch, RootState } from '../store/store'
+import { loginUser } from '../../store/slices/authSlice'
+import { Dispatch, RootState } from '../../store/store'
 
 export default function LoginPage() {
   const [name, setName] = useState('')

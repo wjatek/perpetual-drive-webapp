@@ -1,9 +1,9 @@
 import type { Action, ThunkAction } from '@reduxjs/toolkit'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
-import authSlice from './authSlice'
-import commentsSlice from './commentsSlice'
-import postsSlice from './postsSlice'
-import usersSlice from './usersSlice'
+import authSlice from './slices/authSlice'
+import commentsSlice from './slices/commentsSlice'
+import postsSlice from './slices/postsSlice'
+import usersSlice from './slices/usersSlice'
 
 const rootReducer = combineReducers({
   auth: authSlice,

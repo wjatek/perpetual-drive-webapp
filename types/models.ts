@@ -1,9 +1,9 @@
-export interface User {
+export type User = {
   id: string
   name: string
 }
 
-export interface Post {
+export type Post = {
   id: string
   content: string
   likedBy?: User[]
@@ -11,7 +11,7 @@ export interface Post {
   createdAt: string
 }
 
-export interface Comment {
+export type Comment = {
   id: string
   content: string
   authorId: string
@@ -19,7 +19,7 @@ export interface Comment {
   createdAt: string
 }
 
-export interface Directory {
+export type Directory = {
   id: string
   name: string
   authorId: string
@@ -27,7 +27,7 @@ export interface Directory {
   parentId?: string
 }
 
-export interface File {
+export type File = {
   id: string
   name: string
   authorId: string

@@ -1,4 +1,4 @@
-import { Tile } from '@/app/components/drive/Tile'
+import { Tile } from '@/components/drive/Tile'
 import { Box, Grid2 } from '@mui/material'
 
 const items: {

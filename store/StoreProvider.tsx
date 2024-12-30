@@ -3,7 +3,7 @@ import { setupListeners } from '@reduxjs/toolkit/query'
 import type { ReactNode } from 'react'
 import { useEffect, useRef } from 'react'
 import { Provider } from 'react-redux'
-import { setStore } from './api'
+import { setStore } from '../lib/api'
 import type { Store } from './store'
 import { makeStore } from './store'
 

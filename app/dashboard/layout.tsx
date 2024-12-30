@@ -16,12 +16,12 @@ import Image from 'next/image'
 import { useRouter, usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import DrawerMenu from '../components/ui/DrawerMenu'
-import { ThemeToggleButton } from '../components/ui/ThemeToggleButton'
-import UserActions from '../components/ui/UserActions'
-import { RootState } from '../store/store'
-import { Dispatch } from '@/app/store/store';
-import { refreshAccessToken } from '../store/authSlice'
+import DrawerMenu from '../../components/ui/DrawerMenu'
+import { ThemeToggleButton } from '../../components/ui/ThemeToggleButton'
+import UserActions from '../../components/ui/UserActions'
+import { RootState } from '../../store/store'
+import { Dispatch } from '@/store/store';
+import { refreshAccessToken } from '../../store/slices/authSlice'
 
 const drawerWidth = 240
 

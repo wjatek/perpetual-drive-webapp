@@ -12,8 +12,8 @@ import {
 import { unwrapResult } from '@reduxjs/toolkit'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { createComment, fetchComments } from '../../store/commentsSlice'
-import { Comment } from '../../store/models'
+import { createComment, fetchComments } from '../../store/slices/commentsSlice'
+import { Comment } from '../../types/models'
 import { Dispatch, RootState } from '../../store/store'
 import CommentItem from './CommentItem'
 

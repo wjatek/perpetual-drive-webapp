@@ -1,4 +1,4 @@
-import PostList from '@/app/components/wall/PostList'
+import PostList from '@/components/wall/PostList'
 import { Box } from '@mui/material'
 
 export default function WallPage() {

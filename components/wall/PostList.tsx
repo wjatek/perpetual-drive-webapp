@@ -1,5 +1,5 @@
 'use client'
-import { Post } from '@/app/store/models'
+import { Post } from '@/types/models'
 import { Refresh } from '@mui/icons-material'
 import SendIcon from '@mui/icons-material/Send'
 import {
@@ -14,7 +14,7 @@ import {
 import { unwrapResult } from '@reduxjs/toolkit'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { createPost, fetchPosts } from '../../store/postsSlice'
+import { createPost, fetchPosts } from '../../store/slices/postsSlice'
 import { Dispatch, RootState } from '../../store/store'
 import PostItem from './PostItem'
 
