@@ -1,7 +1,7 @@
+import api from '@/lib/api'
+import { createSlice } from '@/redux/createAppSlice'
+import { User } from '@/types/models'
 import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
-import api from '../../lib/api'
-import { User } from '../../types/models'
-import { createSlice } from '../createAppSlice'
 
 interface UsersState {
   usersById: { [key: string]: User }

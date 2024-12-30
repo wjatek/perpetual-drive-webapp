@@ -1,4 +1,6 @@
 'use client'
+import { loginUser } from '@/redux/slices/authSlice'
+import { Dispatch, RootState } from '@/redux/store'
 import {
   Backdrop,
   Box,
@@ -12,8 +14,6 @@ import Image from 'next/image'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { loginUser } from '../../redux/slices/authSlice'
-import { Dispatch, RootState } from '../../redux/store'
 
 export default function LoginPage() {
   const [name, setName] = useState('')

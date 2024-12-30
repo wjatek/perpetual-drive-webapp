@@ -1,4 +1,6 @@
 'use client'
+import { createPost, fetchPosts } from '@/redux/slices/postsSlice'
+import { Dispatch, RootState } from '@/redux/store'
 import { Post } from '@/types/models'
 import { Refresh } from '@mui/icons-material'
 import SendIcon from '@mui/icons-material/Send'
@@ -14,8 +16,6 @@ import {
 import { unwrapResult } from '@reduxjs/toolkit'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { createPost, fetchPosts } from '../../redux/slices/postsSlice'
-import { Dispatch, RootState } from '../../redux/store'
 import PostItem from './PostItem'
 
 export default function PostList() {

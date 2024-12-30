@@ -1,4 +1,7 @@
 'use client'
+import { createComment, fetchComments } from '@/redux/slices/commentsSlice'
+import { Dispatch, RootState } from '@/redux/store'
+import { Comment } from '@/types/models'
 import SendIcon from '@mui/icons-material/Send'
 import {
   Box,
@@ -12,9 +15,6 @@ import {
 import { unwrapResult } from '@reduxjs/toolkit'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { createComment, fetchComments } from '../../redux/slices/commentsSlice'
-import { Dispatch, RootState } from '../../redux/store'
-import { Comment } from '../../types/models'
 import CommentItem from './CommentItem'
 
 interface CommentsProps {

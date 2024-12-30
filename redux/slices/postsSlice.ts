@@ -1,7 +1,7 @@
+import api from '@/lib/api'
+import { createSlice } from '@/redux/createAppSlice'
+import { Post } from '@/types/models'
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import api from '../../lib/api'
-import { Post } from '../../types/models'
-import { createSlice } from '../createAppSlice'
 
 interface PostsState {
   list: Post[]

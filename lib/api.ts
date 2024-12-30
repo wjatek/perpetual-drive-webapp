@@ -1,7 +1,7 @@
+import apiConfig from '@/config/apiConfig'
+import { refreshAccessToken } from '@/redux/slices/authSlice'
 import { unwrapResult } from '@reduxjs/toolkit'
 import axios from 'axios'
-import apiConfig from '../config/apiConfig'
-import { refreshAccessToken } from '../redux/slices/authSlice'
 
 const API_BASE_URL = apiConfig.apiBaseUrl
 

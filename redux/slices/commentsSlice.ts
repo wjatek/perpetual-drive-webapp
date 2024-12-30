@@ -1,7 +1,7 @@
+import api from '@/lib/api'
+import { createSlice } from '@/redux/createAppSlice'
+import { Comment } from '@/types/models'
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import api from '../../lib/api'
-import { Comment } from '../../types/models'
-import { createSlice } from '../createAppSlice'
 
 interface CommentsState {
   commentsByPostId: { [key: string]: Comment[] }

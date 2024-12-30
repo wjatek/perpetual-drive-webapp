@@ -1,5 +1,9 @@
 'use client'
-import { Dispatch } from '@/redux/store'
+import DrawerMenu from '@/components/ui/DrawerMenu'
+import { ThemeToggleButton } from '@/components/ui/ThemeToggleButton'
+import UserActions from '@/components/ui/UserActions'
+import { refreshAccessToken } from '@/redux/slices/authSlice'
+import { Dispatch, RootState } from '@/redux/store'
 import MenuIcon from '@mui/icons-material/Menu'
 import {
   Backdrop,
@@ -17,11 +21,6 @@ import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import DrawerMenu from '../../components/ui/DrawerMenu'
-import { ThemeToggleButton } from '../../components/ui/ThemeToggleButton'
-import UserActions from '../../components/ui/UserActions'
-import { refreshAccessToken } from '../../redux/slices/authSlice'
-import { RootState } from '../../redux/store'
 
 const drawerWidth = 240
 

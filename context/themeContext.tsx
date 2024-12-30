@@ -1,7 +1,7 @@
 'use client'
+import { darkTheme, lightTheme } from '@/config/theme'
 import { ThemeProvider as MUIThemeProvider } from '@mui/material/styles'
 import { ReactNode, createContext, useContext, useState } from 'react'
-import { darkTheme, lightTheme } from '../config/theme'
 
 interface ThemeContextType {
   toggleTheme: () => void
