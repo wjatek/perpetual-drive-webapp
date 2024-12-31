@@ -1,9 +1,11 @@
 'use client'
+import ProgressBar from '@/components/common/ProgressBar'
+import api from '@/lib/api'
 import { fetchDirectories } from '@/redux/slices/directoriesSlice'
 import { fetchFiles } from '@/redux/slices/filesSlice'
 import { Dispatch, RootState } from '@/redux/store'
 import { Directory } from '@/types/models'
-import { Refresh } from '@mui/icons-material'
+import { Refresh, Upload } from '@mui/icons-material'
 import {
   Backdrop,
   Box,
@@ -13,15 +15,20 @@ import {
   IconButton,
   Link,
   Skeleton,
+  Typography,
 } from '@mui/material'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { DirectoryTile } from './DirectoryTile'
 import { FileTile } from './FileTile'
 import { LoadingTile } from './LoadingTile'
 
 export default function DirectoryView() {
+  const [file, setFile] = useState<File | null>(null)
+  const [uploading, setUploading] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState(0)
+
   const router = useRouter()
   const searchParams = useSearchParams()
   const dispatch = useDispatch<Dispatch>()
@@ -55,6 +62,44 @@ export default function DirectoryView() {
     }
     if (!loadingFiles[directoryId]) {
       dispatch(fetchFiles(directoryId))
+    }
+  }
+
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const selectedFile = event.target.files ? event.target.files[0] : null
+
+    if (selectedFile) {
+      setFile(selectedFile)
+      setUploading(true)
+      const formData = new FormData()
+      formData.append('file', selectedFile)
+      formData.append('directoryId', directoryId)
+
+      try {
+        setUploadProgress(0)
+        const response = await api.post('/files/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          onUploadProgress: (progressEvent) => {
+            if (progressEvent.total) {
+              const percent = Math.floor(
+                (progressEvent.loaded / progressEvent.total) * 100
+              )
+              setUploadProgress(percent)
+            }
+          },
+        })
+
+        console.log('File uploaded successfully:', response.data)
+        loadContent(directoryId)
+      } catch (error) {
+        console.error('Error uploading file:', error)
+      } finally {
+        setUploading(false)
+      }
     }
   }
 
@@ -95,6 +140,28 @@ export default function DirectoryView() {
           >
             <Refresh fontSize="small" />
           </IconButton>
+
+          <IconButton
+            onClick={() => document.getElementById('fileInput')?.click()}
+            disabled={
+              loadingDirectories[directoryId] || loadingFiles[directoryId] || uploading
+            }
+          >
+            <Upload fontSize="small" />
+          </IconButton>
+
+          {uploading && (
+            <Box display="inline-block" px={1}>
+              <Box display="flex" alignItems="center">
+                <Typography color="text.secondary" fontSize={14}>
+                  {file?.name}
+                </Typography>
+                <Box maxWidth={200} pl={1}>
+                  <ProgressBar value={uploadProgress} sx={{ height: 7 }} />
+                </Box>
+              </Box>
+            </Box>
+          )}
         </Grid2>
 
         <Grid2 size={{ xs: 12 }}>
@@ -152,6 +219,13 @@ export default function DirectoryView() {
           <CircularProgress color="inherit" />
         </Backdrop>
       </Grid2>
+
+      <input
+        type="file"
+        id="fileInput"
+        style={{ display: 'none' }}
+        onChange={handleFileUpload}
+      />
     </Box>
   )
 }
