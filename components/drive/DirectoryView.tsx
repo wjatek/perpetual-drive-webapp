@@ -2,13 +2,17 @@
 import { fetchDirectories } from '@/redux/slices/directoriesSlice'
 import { fetchFiles } from '@/redux/slices/filesSlice'
 import { Dispatch, RootState } from '@/redux/store'
+import { Directory } from '@/types/models'
 import { Refresh } from '@mui/icons-material'
 import {
   Backdrop,
   Box,
+  Breadcrumbs,
   CircularProgress,
   Grid2,
   IconButton,
+  Link,
+  Skeleton,
 } from '@mui/material'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
@@ -16,38 +20,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { DirectoryTile } from './DirectoryTile'
 import { FileTile } from './FileTile'
 import { LoadingTile } from './LoadingTile'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-
-const items: {
-  id: string
-  name: string
-  type:
-    | 'folder'
-    | 'pdf'
-    | 'image'
-    | 'video'
-    | 'code'
-    | 'file'
-    | 'text'
-    | 'audio'
-    | 'spreadsheet'
-    | 'archive'
-    | 'presentation'
-    | 'tab'
-}[] = [
-  { id: '1', name: 'Documents', type: 'folder' },
-  { id: '2', name: 'Music', type: 'folder' },
-  { id: '3', name: 'Report.pdf', type: 'pdf' },
-  { id: '4', name: 'Video.mp4', type: 'video' },
-  { id: '5', name: 'Image.jpg', type: 'image' },
-  { id: '6', name: 'Script.js', type: 'code' },
-  { id: '7', name: 'Notes.txt', type: 'text' },
-  { id: '8', name: 'Podcast.mp3', type: 'audio' },
-  { id: '9', name: 'FinancialReport.xlsx', type: 'spreadsheet' },
-  { id: '10', name: 'Backup.zip', type: 'archive' },
-  { id: '11', name: 'Presentation.pptx', type: 'presentation' },
-  { id: '12', name: 'Tabs.gp7', type: 'tab' },
-]
 
 export default function DirectoryView() {
   const router = useRouter()
@@ -55,6 +27,7 @@ export default function DirectoryView() {
   const dispatch = useDispatch<Dispatch>()
   const {
     directoriesByParentId,
+    directoryPath,
     loading: loadingDirectories,
     error: directoriesError,
   } = useSelector((state: RootState) => state.directories)
@@ -72,7 +45,6 @@ export default function DirectoryView() {
       !filesByDirectoryId[directoryId] &&
       !loadingFiles[directoryId]
     ) {
-      console.log('loading from useEffect')
       loadContent(directoryId)
     }
   }, [directoryId])
@@ -90,8 +62,12 @@ export default function DirectoryView() {
     loadContent(directoryId)
   }
 
-  const handleBackClick = () => {
-    router.back()
+  const handleCrumbClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    id: string
+  ) => {
+    e.preventDefault()
+    if (id !== directoryId) router.push(`?id=${id}`)
   }
 
   return (
@@ -112,16 +88,6 @@ export default function DirectoryView() {
       >
         <Grid2 size={{ xs: 12 }}>
           <IconButton
-            onClick={handleBackClick}
-            disabled={
-              loadingDirectories[directoryId] ||
-              loadingFiles[directoryId] ||
-              !directoryId
-            }
-          >
-            <ArrowBackIcon fontSize="small" />
-          </IconButton>
-          <IconButton
             onClick={handleRefreshClick}
             disabled={
               loadingDirectories[directoryId] || loadingFiles[directoryId]
@@ -129,6 +95,29 @@ export default function DirectoryView() {
           >
             <Refresh fontSize="small" />
           </IconButton>
+        </Grid2>
+
+        <Grid2 size={{ xs: 12 }}>
+          <Breadcrumbs>
+            {directoryPath[directoryId] ? (
+              [
+                { name: 'Drive', id: '' } as Pick<Directory, 'id' | 'name'>,
+                ...directoryPath[directoryId],
+              ].map((crumb) => (
+                <Link
+                  href={`?id=${crumb.id}`}
+                  underline="hover"
+                  color={crumb.id !== directoryId ? 'inherit' : 'text.primary'}
+                  key={crumb.id}
+                  onClick={(e) => handleCrumbClick(e, crumb.id)}
+                >
+                  {crumb.name}
+                </Link>
+              ))
+            ) : (
+              <Skeleton height={14} width={100} />
+            )}
+          </Breadcrumbs>
         </Grid2>
 
         {directoriesByParentId[directoryId]?.map((directory) => (

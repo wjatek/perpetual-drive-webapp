@@ -7,23 +7,30 @@ interface DirectoriesState {
   directoriesByParentId: { [key: string | '']: Directory[] }
   loading: { [key: string | '']: boolean }
   error: string | null
+  directoryPath: { [key: string]: Pick<Directory, 'id' | 'name'>[] }
 }
 
 const initialState: DirectoriesState = {
   directoriesByParentId: {},
   loading: {},
   error: null,
+  directoryPath: {},
 }
 
-export const fetchDirectories = createAsyncThunk<Directory[], string | null>(
-  'users/fetchDirectories',
-  async (id) => {
-    const response = await api.get<Directory[]>(
-      `/directories?parentId=${id || ''}`
-    )
-    return response.data
-  }
-)
+export const fetchDirectories = createAsyncThunk<
+  { directories: Directory[]; path: Pick<Directory, 'id' | 'name'>[] },
+  string | null
+>('users/fetchDirectories', async (id) => {
+  const [directoriesResponse, pathResponse] = await Promise.all([
+    api.get<Directory[]>(`/directories?parentId=${id || ''}`),
+    id
+      ? api.get<{ path: Pick<Directory, 'id' | 'name'>[] }>(
+          `/directories/${id}/path`
+        )
+      : Promise.resolve({ data: { path: [] } }),
+  ])
+  return { directories: directoriesResponse.data, path: pathResponse.data.path }
+})
 
 const directoriesSlice = createSlice({
   name: 'directories',
@@ -38,8 +45,9 @@ const directoriesSlice = createSlice({
       })
       .addCase(fetchDirectories.fulfilled, (state, action) => {
         const id = action.meta.arg
-        const directories = action.payload
-        state.directoriesByParentId[id || ''] = directories
+        const payload = action.payload
+        state.directoriesByParentId[id || ''] = payload.directories
+        state.directoryPath[id || ''] = payload.path
         state.loading[id || ''] = false
       })
       .addCase(fetchDirectories.rejected, (state, action) => {

@@ -64,7 +64,7 @@ export function DirectoryTile({ directory }: DirectoryTileProps) {
           <FolderIcon sx={{ fontSize: 50, color: 'primary.main' }} />
         </Box>
         <CardContent>
-          <Typography fontSize={14} align="center" noWrap>
+          <Typography fontSize={14} align="center" fontWeight='bolder' noWrap>
             {directory.name}
           </Typography>
         </CardContent>
