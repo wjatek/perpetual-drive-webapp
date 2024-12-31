@@ -99,6 +99,8 @@ export default function DirectoryView() {
         console.error('Error uploading file:', error)
       } finally {
         setUploading(false)
+        setUploadProgress(0)
+        setFile(null)
       }
     }
   }
