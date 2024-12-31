@@ -1,4 +1,17 @@
-const resolveFileType = (filename: string): string => {
+export type FileType =
+  | 'file'
+  | 'pdf'
+  | 'image'
+  | 'video'
+  | 'code'
+  | 'text'
+  | 'audio'
+  | 'spreadsheet'
+  | 'archive'
+  | 'presentation'
+  | 'tab'
+
+export const resolveFileType = (filename: string): FileType => {
   const extension = filename.split('.').pop()?.toLowerCase()
 
   if (!extension) return 'file'
