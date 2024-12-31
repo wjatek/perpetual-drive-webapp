@@ -47,7 +47,6 @@ export function FileTile({ file }: FileTileProps) {
         responseType: 'blob',
       })
 
-      const contentDisposition = response.headers['content-disposition']
       const fileName = file.name
 
       const blob = response.data
@@ -59,6 +58,8 @@ export function FileTile({ file }: FileTileProps) {
       window.URL.revokeObjectURL(url)
     } catch (error) {
       console.error('Error downloading file:', error)
+    } finally {
+      handleCloseMenu()
     }
   }
 
