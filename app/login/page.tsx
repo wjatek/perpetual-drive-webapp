@@ -19,7 +19,6 @@ export default function LoginPage() {
   const [name, setName] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
-  const [isLoginAttempted, setIsLoginAttempted] = useState(false)
   const dispatch = useDispatch<Dispatch>()
   const { error, isAuthenticated, token } = useSelector(
     (state: RootState) => state.auth

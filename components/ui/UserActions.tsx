@@ -81,14 +81,14 @@ export default function UserActions() {
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         disableScrollLock
       >
-        <MenuItem onClick={handleProfileClick}>
+        <MenuItem onClick={handleProfileClick} disabled>
           <Avatar sx={{ width: 32, height: 32 }}>
             {getInitials(user?.name)}
           </Avatar>{' '}
           Profile
         </MenuItem>
         <Divider />
-        <MenuItem onClick={handleSettingsClick}>
+        <MenuItem onClick={handleSettingsClick} disabled>
           <ListItemIcon>
             <Settings fontSize="small" />
           </ListItemIcon>

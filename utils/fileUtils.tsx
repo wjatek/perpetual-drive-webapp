@@ -1,3 +1,16 @@
+import CodeIcon from '@mui/icons-material/Code'
+import DescriptionIcon from '@mui/icons-material/Description'
+import FolderIcon from '@mui/icons-material/Folder'
+import FolderZipIcon from '@mui/icons-material/FolderZip'
+import ImageIcon from '@mui/icons-material/Image'
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile'
+import MovieIcon from '@mui/icons-material/Movie'
+import MusicNoteIcon from '@mui/icons-material/MusicNote'
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf'
+import PieChartIcon from '@mui/icons-material/PieChart'
+import TableViewIcon from '@mui/icons-material/TableView'
+import TuneIcon from '@mui/icons-material/Tune'
+
 export type FileType =
   | 'file'
   | 'pdf'
@@ -238,5 +251,34 @@ export const resolveFileType = (filename: string): FileType => {
     // Default
     default:
       return 'file'
+  }
+}
+
+export const getIcon = (type: FileType) => {
+  switch (type) {
+    case 'pdf':
+      return <PictureAsPdfIcon sx={{ fontSize: 50, color: 'error.main' }} />
+    case 'image':
+      return <ImageIcon sx={{ fontSize: 50, color: 'success.main' }} />
+    case 'video':
+      return <MovieIcon sx={{ fontSize: 50, color: 'secondary.main' }} />
+    case 'code':
+      return <CodeIcon sx={{ fontSize: 50, color: 'info.main' }} />
+    case 'text':
+      return <DescriptionIcon sx={{ fontSize: 50, color: 'text.secondary' }} />
+    case 'audio':
+      return <MusicNoteIcon sx={{ fontSize: 50, color: 'warning.main' }} />
+    case 'spreadsheet':
+      return <TableViewIcon sx={{ fontSize: 50, color: 'success.dark' }} />
+    case 'archive':
+      return <FolderZipIcon sx={{ fontSize: 50, color: 'text.primary' }} />
+    case 'presentation':
+      return <PieChartIcon sx={{ fontSize: 50, color: 'secondary.dark' }} />
+    case 'tab':
+      return <TuneIcon sx={{ fontSize: 50, color: 'info.main' }} />
+    default:
+      return (
+        <InsertDriveFileIcon sx={{ fontSize: 50, color: 'text.secondary' }} />
+      )
   }
 }
