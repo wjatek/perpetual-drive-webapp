@@ -1,11 +1,14 @@
 'use client'
 import ProgressBar from '@/components/common/ProgressBar'
 import api from '@/lib/api'
-import { fetchDirectories } from '@/redux/slices/directoriesSlice'
+import {
+  createDirectory,
+  fetchDirectories,
+} from '@/redux/slices/directoriesSlice'
 import { fetchFiles } from '@/redux/slices/filesSlice'
 import { Dispatch, RootState } from '@/redux/store'
 import { Directory } from '@/types/models'
-import { Refresh, Upload } from '@mui/icons-material'
+import { Refresh, Upload, CreateNewFolder } from '@mui/icons-material'
 import {
   Backdrop,
   Box,
@@ -23,11 +26,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import { DirectoryTile } from './DirectoryTile'
 import { FileTile } from './FileTile'
 import { LoadingTile } from './LoadingTile'
+import Prompt from '../common/Prompt'
+import { unwrapResult } from '@reduxjs/toolkit'
 
 export default function DirectoryView() {
   const [file, setFile] = useState<File | null>(null)
   const [uploading, setUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
+  const [newDirectoryPromptOpen, setNewDirectoryPromptOpen] = useState(false)
 
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -37,6 +43,7 @@ export default function DirectoryView() {
     directoryPath,
     loading: loadingDirectories,
     error: directoriesError,
+    addDirectoryStatus,
   } = useSelector((state: RootState) => state.directories)
   const {
     filesByDirectoryId,
@@ -109,6 +116,28 @@ export default function DirectoryView() {
     loadContent(directoryId)
   }
 
+  const handleNewDirectoryClick = () => {
+    setNewDirectoryPromptOpen(true)
+  }
+
+  const handleCreateDirectory = async (value: string) => {
+    if (value.trim()) {
+      try {
+        const resultAction = await dispatch(
+          createDirectory({
+            name: value,
+            parentId: directoryId,
+          })
+        )
+        const result = unwrapResult(resultAction)
+      } catch (error) {
+        console.error('Error adding directory: ', error)
+      } finally {
+        loadContent(directoryId)
+      }
+    }
+  }
+
   const handleCrumbClick = (
     e: React.MouseEvent<HTMLAnchorElement>,
     id: string
@@ -144,9 +173,20 @@ export default function DirectoryView() {
           </IconButton>
 
           <IconButton
+            onClick={handleNewDirectoryClick}
+            disabled={
+              loadingDirectories[directoryId] || loadingFiles[directoryId]
+            }
+          >
+            <CreateNewFolder fontSize="small" />
+          </IconButton>
+
+          <IconButton
             onClick={() => document.getElementById('fileInput')?.click()}
             disabled={
-              loadingDirectories[directoryId] || loadingFiles[directoryId] || uploading
+              loadingDirectories[directoryId] ||
+              loadingFiles[directoryId] ||
+              uploading
             }
           >
             <Upload fontSize="small" />
@@ -211,7 +251,11 @@ export default function DirectoryView() {
             zIndex: 999999,
             position: 'absolute',
           }}
-          open={loadingDirectories[directoryId] || loadingFiles[directoryId]}
+          open={
+            loadingDirectories[directoryId] ||
+            loadingFiles[directoryId] ||
+            addDirectoryStatus.loading
+          }
           transitionDuration={{
             appear: 0,
             enter: 0,
@@ -221,6 +265,13 @@ export default function DirectoryView() {
           <CircularProgress color="inherit" />
         </Backdrop>
       </Grid2>
+
+      <Prompt
+        text="Directory name"
+        open={newDirectoryPromptOpen}
+        onClose={() => setNewDirectoryPromptOpen(false)}
+        onSubmit={(value) => handleCreateDirectory(value)}
+      />
 
       <input
         type="file"

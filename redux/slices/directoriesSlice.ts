@@ -8,6 +8,10 @@ interface DirectoriesState {
   loading: { [key: string | '']: boolean }
   error: string | null
   directoryPath: { [key: string]: Pick<Directory, 'id' | 'name'>[] }
+  addDirectoryStatus: {
+    loading: boolean
+    error: string | null
+  }
 }
 
 const initialState: DirectoriesState = {
@@ -15,12 +19,16 @@ const initialState: DirectoriesState = {
   loading: {},
   error: null,
   directoryPath: {},
+  addDirectoryStatus: {
+    loading: false,
+    error: null,
+  },
 }
 
 export const fetchDirectories = createAsyncThunk<
   { directories: Directory[]; path: Pick<Directory, 'id' | 'name'>[] },
   string | null
->('users/fetchDirectories', async (id) => {
+>('directories/fetchDirectories', async (id) => {
   const [directoriesResponse, pathResponse] = await Promise.all([
     api.get<Directory[]>(`/directories?parentId=${id || ''}`),
     id
@@ -30,6 +38,14 @@ export const fetchDirectories = createAsyncThunk<
       : Promise.resolve({ data: { path: [] } }),
   ])
   return { directories: directoriesResponse.data, path: pathResponse.data.path }
+})
+
+export const createDirectory = createAsyncThunk<
+  Directory,
+  Pick<Directory, 'name' | 'parentId'>
+>('directories/createDirectory', async (directory) => {
+  const response = await api.post<Directory>('/directories', directory)
+  return response.data
 })
 
 const directoriesSlice = createSlice({
@@ -54,6 +70,22 @@ const directoriesSlice = createSlice({
         const id = action.meta.arg
         state.loading[id || ''] = false
         state.error = action.error.message || 'Failed to fetch directories'
+      })
+
+      .addCase(createDirectory.pending, (state) => {
+        state.addDirectoryStatus.loading = true
+        state.addDirectoryStatus.error = null
+      })
+      .addCase(createDirectory.fulfilled, (state, action) => {
+        const directory = action.payload
+        if (!state.directoriesByParentId[directory.parentId || ''])
+        state.directoriesByParentId[directory.parentId || ''].unshift(directory)
+        state.addDirectoryStatus.loading = false
+      })
+      .addCase(createDirectory.rejected, (state, action) => {
+        state.addDirectoryStatus.loading = false
+        state.addDirectoryStatus.error =
+          action.error.message || 'Failed to create directory'
       })
   },
 })
