@@ -49,7 +49,6 @@ api.interceptors.response.use(
       store
     ) {
       originalRequest._retry = true
-      debugger
       try {
         const resultAction = await store.dispatch(refreshAccessToken())
         const token = unwrapResult(resultAction)

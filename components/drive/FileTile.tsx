@@ -11,11 +11,13 @@ import {
   Card,
   CardActionArea,
   CardContent,
+  CircularProgress,
   Divider,
   Menu,
   MenuItem,
   Typography,
 } from '@mui/material'
+import { relative } from 'path'
 import { useState } from 'react'
 
 type FileTileProps = {
@@ -28,6 +30,8 @@ export function FileTile({ file }: FileTileProps) {
     x: 0,
     y: 0,
   })
+  const [downloadProgress, setDownloadProgress] = useState(0)
+  const [downloading, setDownloading] = useState(false)
 
   const handleContextMenu = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault()
@@ -43,8 +47,18 @@ export function FileTile({ file }: FileTileProps) {
 
   const handleDownload = async () => {
     try {
+      setDownloading(true)
+      handleCloseMenu()
       const response = await api.get(`/files/download/${file.id}`, {
         responseType: 'blob',
+        onDownloadProgress: (progressEvent) => {
+          const total = progressEvent.total
+          const loaded = progressEvent.loaded
+          if (total) {
+            const percent = Math.round((loaded / total) * 100)
+            setDownloadProgress(percent)
+          }
+        },
       })
 
       const fileName = file.name
@@ -59,7 +73,8 @@ export function FileTile({ file }: FileTileProps) {
     } catch (error) {
       console.error('Error downloading file:', error)
     } finally {
-      handleCloseMenu()
+      setDownloadProgress(0)
+      setDownloading(false)
     }
   }
 
@@ -78,7 +93,22 @@ export function FileTile({ file }: FileTileProps) {
             height: 100,
           }}
         >
-          {getIcon(resolveFileType(file.name))}
+          <Box position="relative">
+            {getIcon(resolveFileType(file.name))}
+            {downloading && (
+              <CircularProgress
+                sx={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%) rotate(-90deg) !important',
+                }}
+                size={70}
+                variant="determinate"
+                value={downloadProgress}
+              />
+            )}
+          </Box>
         </Box>
         <CardContent>
           <Typography fontSize={14} align="center" noWrap>
