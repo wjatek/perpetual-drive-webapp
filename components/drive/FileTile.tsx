@@ -1,4 +1,5 @@
 'use client'
+import api from '@/lib/api'
 import { File } from '@/types/models'
 import { getIcon, resolveFileType } from '@/utils/fileUtils'
 import DeleteIcon from '@mui/icons-material/Delete'
@@ -40,6 +41,27 @@ export function FileTile({ file }: FileTileProps) {
 
   const handleClick = () => {}
 
+  const handleDownload = async () => {
+    try {
+      const response = await api.get(`/files/download/${file.id}`, {
+        responseType: 'blob',
+      })
+
+      const contentDisposition = response.headers['content-disposition']
+      const fileName = file.name
+
+      const blob = response.data
+      const link = document.createElement('a')
+      const url = window.URL.createObjectURL(blob)
+      link.href = url
+      link.download = fileName
+      link.click()
+      window.URL.revokeObjectURL(url)
+    } catch (error) {
+      console.error('Error downloading file:', error)
+    }
+  }
+
   return (
     <Card
       sx={{ maxWidth: 200 }}
@@ -72,7 +94,7 @@ export function FileTile({ file }: FileTileProps) {
         open={Boolean(anchorEl)}
         onClose={handleCloseMenu}
       >
-        <MenuItem onClick={handleCloseMenu} disabled>
+        <MenuItem onClick={handleDownload}>
           <DownloadIcon sx={{ mr: 2 }} />
           Download
         </MenuItem>
