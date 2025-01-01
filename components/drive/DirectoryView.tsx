@@ -249,14 +249,6 @@ export default function DirectoryView() {
           </Grid2>
         ))}
 
-        {(loadingDirectories[directoryId] || loadingFiles[directoryId]) &&
-          (!directoriesByParentId[directoryId] ||
-            !filesByDirectoryId[directoryId]) && (
-            <Grid2 size={{ xs: 6, md: 3, lg: 2 }}>
-              <LoadingTile />
-            </Grid2>
-          )}
-
         <Backdrop
           sx={(theme) => ({
             color: 'text.primary',
