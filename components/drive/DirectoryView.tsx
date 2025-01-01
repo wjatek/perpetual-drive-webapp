@@ -106,6 +106,7 @@ export default function DirectoryView() {
         setUploading(false)
         setUploadProgress(0)
         setFile(null)
+        event.target.value = ''
       }
     }
   }
