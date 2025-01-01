@@ -150,7 +150,6 @@ export default function DirectoryView() {
     <Box
       sx={{
         backgroundColor: 'background.default',
-        position: 'relative',
         mt: 0,
         pb: 2,
       }}
@@ -159,7 +158,6 @@ export default function DirectoryView() {
         container
         spacing={2}
         sx={{
-          mb: { xs: 4, sm: 2 },
           px: { xs: 2, sm: 4 },
         }}
       >
@@ -236,6 +234,8 @@ export default function DirectoryView() {
         spacing={2}
         sx={{
           px: { xs: 2, sm: 4 },
+          py: { xs: 4, sm: 2 },
+          position: 'relative',
         }}
       >
         {directoriesByParentId[directoryId]?.map((directory) => (
@@ -252,25 +252,25 @@ export default function DirectoryView() {
         {(loadingDirectories[directoryId] || loadingFiles[directoryId]) &&
           (!directoriesByParentId[directoryId] ||
             !filesByDirectoryId[directoryId]) && <LoadingTile />}
-      </Grid2>
 
-      <Backdrop
-        sx={(theme) => ({
-          color: 'text.primary',
-          zIndex: theme.zIndex.drawer - 1,
-          background: 'none',
-          backdropFilter: 'blur(4px)',
-          position: 'absolute',
-        })}
-        transitionDuration={200}
-        open={
-          loadingDirectories[directoryId] ||
-          loadingFiles[directoryId] ||
-          addDirectoryStatus.loading
-        }
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
+        <Backdrop
+          sx={(theme) => ({
+            color: 'text.primary',
+            zIndex: theme.zIndex.drawer - 1,
+            background: 'none',
+            backdropFilter: 'blur(4px)',
+            position: 'absolute',
+          })}
+          transitionDuration={200}
+          open={
+            loadingDirectories[directoryId] ||
+            loadingFiles[directoryId] ||
+            addDirectoryStatus.loading
+          }
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      </Grid2>
 
       <Prompt
         text="Directory name"
