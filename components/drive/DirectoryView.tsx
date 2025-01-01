@@ -252,6 +252,32 @@ export default function DirectoryView() {
           </Grid2>
         ))}
 
+        {!loadingFiles[directoryId] &&
+          !loadingDirectories[directoryId] &&
+          !filesByDirectoryId[directoryId]?.length &&
+          !directoriesByParentId[directoryId]?.length && (
+            <Typography
+              color="text.secondary"
+              fontSize={18}
+              textAlign="center"
+              width="100%"
+              py={2}
+            >
+              The directory is empty,{' '}
+              <Link
+                href="#"
+                onClick={() => document.getElementById('fileInput')?.click()}
+              >
+                upload a file
+              </Link>{' '}
+              or{' '}
+              <Link href="#" onClick={handleNewDirectoryClick}>
+                create a subdirectory
+              </Link>
+              .
+            </Typography>
+          )}
+
         <Backdrop
           sx={(theme) => ({
             color: 'text.primary',
