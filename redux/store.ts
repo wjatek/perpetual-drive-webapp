@@ -2,6 +2,8 @@ import type { Action, ThunkAction } from '@reduxjs/toolkit'
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import authSlice from './slices/authSlice'
 import commentsSlice from './slices/commentsSlice'
+import directoriesSlice from './slices/directoriesSlice'
+import filesSlice from './slices/filesSlice'
 import postsSlice from './slices/postsSlice'
 import usersSlice from './slices/usersSlice'
 
@@ -10,6 +12,8 @@ const rootReducer = combineReducers({
   posts: postsSlice,
   comments: commentsSlice,
   users: usersSlice,
+  directories: directoriesSlice,
+  files: filesSlice,
 })
 export type RootState = ReturnType<typeof rootReducer>
 
