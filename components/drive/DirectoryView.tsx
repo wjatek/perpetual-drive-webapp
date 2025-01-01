@@ -150,8 +150,9 @@ export default function DirectoryView() {
     <Box
       sx={{
         backgroundColor: 'background.default',
+        position: 'relative',
         mt: 0,
-        mb: 2,
+        pb: 2,
       }}
     >
       <Grid2
@@ -159,7 +160,6 @@ export default function DirectoryView() {
         spacing={2}
         sx={{
           px: { xs: 2, sm: 4 },
-          position: 'relative',
         }}
       >
         <Grid2 size={{ xs: 12 }}>
@@ -243,28 +243,25 @@ export default function DirectoryView() {
         {(loadingDirectories[directoryId] || loadingFiles[directoryId]) &&
           (!directoriesByParentId[directoryId] ||
             !filesByDirectoryId[directoryId]) && <LoadingTile />}
-
-        <Backdrop
-          sx={{
-            color: '#fff',
-            backgroundColor: 'background.default',
-            zIndex: 999999,
-            position: 'absolute',
-          }}
-          open={
-            loadingDirectories[directoryId] ||
-            loadingFiles[directoryId] ||
-            addDirectoryStatus.loading
-          }
-          transitionDuration={{
-            appear: 0,
-            enter: 0,
-            exit: 100,
-          }}
-        >
-          <CircularProgress color="inherit" />
-        </Backdrop>
       </Grid2>
+      
+      <Backdrop
+        sx={(theme) => ({
+          color: 'text.primary',
+          zIndex: theme.zIndex.drawer - 1,
+          background: 'none',
+          backdropFilter: 'blur(4px)',
+          position: 'absolute',
+        })}
+        transitionDuration={200}
+        open={
+          loadingDirectories[directoryId] ||
+          loadingFiles[directoryId] ||
+          addDirectoryStatus.loading
+        }
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
 
       <Prompt
         text="Directory name"
