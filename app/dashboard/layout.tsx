@@ -119,7 +119,7 @@ export default function DashboardLayout({
             </Typography>
           </Toolbar>
           <Divider />
-          <DrawerMenu />
+          <DrawerMenu onClick={toggleDrawer} />
         </Drawer>
 
         <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
