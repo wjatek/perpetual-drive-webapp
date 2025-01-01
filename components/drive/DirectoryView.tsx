@@ -8,7 +8,7 @@ import {
 import { fetchFiles } from '@/redux/slices/filesSlice'
 import { Dispatch, RootState } from '@/redux/store'
 import { Directory } from '@/types/models'
-import { Refresh, Upload, CreateNewFolder } from '@mui/icons-material'
+import { CreateNewFolder, Refresh, Upload } from '@mui/icons-material'
 import {
   Backdrop,
   Box,
@@ -20,14 +20,14 @@ import {
   Skeleton,
   Typography,
 } from '@mui/material'
+import { unwrapResult } from '@reduxjs/toolkit'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import Prompt from '../common/Prompt'
 import { DirectoryTile } from './DirectoryTile'
 import { FileTile } from './FileTile'
 import { LoadingTile } from './LoadingTile'
-import Prompt from '../common/Prompt'
-import { unwrapResult } from '@reduxjs/toolkit'
 
 export default function DirectoryView() {
   const [file, setFile] = useState<File | null>(null)
@@ -159,6 +159,7 @@ export default function DirectoryView() {
         container
         spacing={2}
         sx={{
+          mb: { xs: 4, sm: 2 },
           px: { xs: 2, sm: 4 },
         }}
       >
@@ -228,7 +229,15 @@ export default function DirectoryView() {
             )}
           </Breadcrumbs>
         </Grid2>
+      </Grid2>
 
+      <Grid2
+        container
+        spacing={2}
+        sx={{
+          px: { xs: 2, sm: 4 },
+        }}
+      >
         {directoriesByParentId[directoryId]?.map((directory) => (
           <Grid2 size={{ xs: 6, md: 3, lg: 2 }} key={directory.id}>
             <DirectoryTile directory={directory} />
@@ -244,7 +253,7 @@ export default function DirectoryView() {
           (!directoriesByParentId[directoryId] ||
             !filesByDirectoryId[directoryId]) && <LoadingTile />}
       </Grid2>
-      
+
       <Backdrop
         sx={(theme) => ({
           color: 'text.primary',
