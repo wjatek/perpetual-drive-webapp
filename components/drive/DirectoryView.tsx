@@ -7,7 +7,6 @@ import {
 } from '@/redux/slices/directoriesSlice'
 import { fetchFiles } from '@/redux/slices/filesSlice'
 import { Dispatch, RootState } from '@/redux/store'
-import { Directory } from '@/types/models'
 import { CreateNewFolder, Refresh, Upload } from '@mui/icons-material'
 import {
   Backdrop,
@@ -27,7 +26,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import Prompt from '../common/Prompt'
 import { DirectoryTile } from './DirectoryTile'
 import { FileTile } from './FileTile'
-import { LoadingTile } from './LoadingTile'
 
 export default function DirectoryView() {
   const [file, setFile] = useState<File | null>(null)
@@ -207,11 +205,16 @@ export default function DirectoryView() {
 
         <Grid2 size={{ xs: 12 }}>
           <Breadcrumbs>
+            <Link
+              href={''}
+              underline="hover"
+              color={directoryId ? 'inherit' : 'text.primary'}
+              onClick={(e) => handleCrumbClick(e, '')}
+            >
+              Drive
+            </Link>
             {directoryPath[directoryId] ? (
-              [
-                { name: 'Drive', id: '' } as Pick<Directory, 'id' | 'name'>,
-                ...directoryPath[directoryId],
-              ].map((crumb) => (
+              directoryPath[directoryId].map((crumb) => (
                 <Link
                   href={`?id=${crumb.id}`}
                   underline="hover"
@@ -223,7 +226,7 @@ export default function DirectoryView() {
                 </Link>
               ))
             ) : (
-              <Skeleton height={14} width={100} />
+              <Skeleton height={24} width={100} />
             )}
           </Breadcrumbs>
         </Grid2>
@@ -249,12 +252,30 @@ export default function DirectoryView() {
           </Grid2>
         ))}
 
-        {(loadingDirectories[directoryId] || loadingFiles[directoryId]) &&
-          (!directoriesByParentId[directoryId] ||
-            !filesByDirectoryId[directoryId]) && (
-            <Grid2 size={{ xs: 6, md: 3, lg: 2 }}>
-              <LoadingTile />
-            </Grid2>
+        {!loadingFiles[directoryId] &&
+          !loadingDirectories[directoryId] &&
+          !filesByDirectoryId[directoryId]?.length &&
+          !directoriesByParentId[directoryId]?.length && (
+            <Typography
+              color="text.secondary"
+              fontSize={18}
+              textAlign="center"
+              width="100%"
+              py={2}
+            >
+              The directory is empty,{' '}
+              <Link
+                href="#"
+                onClick={() => document.getElementById('fileInput')?.click()}
+              >
+                upload a file
+              </Link>{' '}
+              or{' '}
+              <Link href="#" onClick={handleNewDirectoryClick}>
+                create a subdirectory
+              </Link>
+              .
+            </Typography>
           )}
 
         <Backdrop

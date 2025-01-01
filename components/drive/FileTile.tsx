@@ -1,5 +1,11 @@
 'use client'
+import CircularProgressWithValue from '@/components/common/CircularProgressWithValue'
 import api from '@/lib/api'
+import {
+  setFileDownloading,
+  setFileDownloadingProgress,
+} from '@/redux/slices/filesSlice'
+import { Dispatch, RootState } from '@/redux/store'
 import { File } from '@/types/models'
 import { getIcon, resolveFileType } from '@/utils/fileUtils'
 import DeleteIcon from '@mui/icons-material/Delete'
@@ -11,13 +17,13 @@ import {
   Card,
   CardActionArea,
   CardContent,
-  CircularProgress,
   Divider,
   Menu,
   MenuItem,
   Typography,
 } from '@mui/material'
 import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
 type FileTileProps = {
   file: File
@@ -29,8 +35,10 @@ export function FileTile({ file }: FileTileProps) {
     x: 0,
     y: 0,
   })
-  const [downloadProgress, setDownloadProgress] = useState(0)
-  const [downloading, setDownloading] = useState(false)
+  const dispatch = useDispatch<Dispatch>()
+  const { fileDownloading, fileDownloadingProgress } = useSelector(
+    (state: RootState) => state.files
+  )
 
   const handleContextMenu = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault()
@@ -46,7 +54,8 @@ export function FileTile({ file }: FileTileProps) {
 
   const handleDownload = async () => {
     try {
-      setDownloading(true)
+      dispatch(setFileDownloading({ id: file.id, isDownloading: true }))
+      dispatch(setFileDownloadingProgress({ id: file.id, value: 0 }))
       handleCloseMenu()
       const response = await api.get(`/files/download/${file.id}`, {
         responseType: 'blob',
@@ -55,7 +64,9 @@ export function FileTile({ file }: FileTileProps) {
           const loaded = progressEvent.loaded
           if (total) {
             const percent = Math.round((loaded / total) * 100)
-            setDownloadProgress(percent)
+            dispatch(
+              setFileDownloadingProgress({ id: file.id, value: percent })
+            )
           }
         },
       })
@@ -72,8 +83,8 @@ export function FileTile({ file }: FileTileProps) {
     } catch (error) {
       console.error('Error downloading file:', error)
     } finally {
-      setDownloadProgress(0)
-      setDownloading(false)
+      dispatch(setFileDownloadingProgress({ id: file.id, value: 0 }))
+      dispatch(setFileDownloading({ id: file.id, isDownloading: false }))
     }
   }
 
@@ -94,18 +105,29 @@ export function FileTile({ file }: FileTileProps) {
         >
           <Box position="relative">
             {getIcon(resolveFileType(file.name))}
-            {downloading && (
-              <CircularProgress
+            {fileDownloading[file.id] && (
+              <Box
                 sx={{
+                  top: 0,
+                  left: 0,
+                  bottom: 0,
+                  right: 0,
                   position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%) rotate(-90deg) !important',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backdropFilter: 'blur(3px)',
                 }}
-                size={70}
-                variant="determinate"
-                value={downloadProgress}
-              />
+              >
+                <CircularProgressWithValue
+                  progressConfig={{ size: 70 }}
+                  textConfig={{
+                    fontSize: 20,
+                    fontWeight: 'bold',
+                  }}
+                  value={fileDownloadingProgress[file.id]}
+                />
+              </Box>
             )}
           </Box>
         </Box>
@@ -124,7 +146,7 @@ export function FileTile({ file }: FileTileProps) {
         open={Boolean(anchorEl)}
         onClose={handleCloseMenu}
       >
-        <MenuItem onClick={handleDownload}>
+        <MenuItem onClick={handleDownload} disabled={fileDownloading[file.id]}>
           <DownloadIcon sx={{ mr: 2 }} />
           Download
         </MenuItem>
