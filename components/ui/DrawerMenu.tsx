@@ -17,7 +17,11 @@ const menuItems = [
   { text: 'Drive', url: '/dashboard/drive', icon: <FolderIcon /> },
 ]
 
-export default function DrawerMenu() {
+type DrawerMenuProps = {
+  onClick: () => void
+}
+
+export default function DrawerMenu({ onClick }: DrawerMenuProps) {
   const pathname = usePathname()
 
   return (
@@ -27,6 +31,7 @@ export default function DrawerMenu() {
           <ListItemButton
             selected={pathname === item.url}
             LinkComponent={Link}
+            onClick={onClick}
             href={item.url}
           >
             <ListItemIcon>{item.icon}</ListItemIcon>
