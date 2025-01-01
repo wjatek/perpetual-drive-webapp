@@ -17,7 +17,6 @@ import {
   MenuItem,
   Typography,
 } from '@mui/material'
-import { relative } from 'path'
 import { useState } from 'react'
 
 type FileTileProps = {
