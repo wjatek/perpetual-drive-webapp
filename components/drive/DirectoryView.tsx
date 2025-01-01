@@ -8,7 +8,7 @@ import {
 import { fetchFiles } from '@/redux/slices/filesSlice'
 import { Dispatch, RootState } from '@/redux/store'
 import { Directory } from '@/types/models'
-import { Refresh, Upload, CreateNewFolder } from '@mui/icons-material'
+import { CreateNewFolder, Refresh, Upload } from '@mui/icons-material'
 import {
   Backdrop,
   Box,
@@ -20,14 +20,14 @@ import {
   Skeleton,
   Typography,
 } from '@mui/material'
+import { unwrapResult } from '@reduxjs/toolkit'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import Prompt from '../common/Prompt'
 import { DirectoryTile } from './DirectoryTile'
 import { FileTile } from './FileTile'
 import { LoadingTile } from './LoadingTile'
-import Prompt from '../common/Prompt'
-import { unwrapResult } from '@reduxjs/toolkit'
 
 export default function DirectoryView() {
   const [file, setFile] = useState<File | null>(null)
@@ -151,7 +151,7 @@ export default function DirectoryView() {
       sx={{
         backgroundColor: 'background.default',
         mt: 0,
-        mb: 2,
+        pb: 2,
       }}
     >
       <Grid2
@@ -159,7 +159,6 @@ export default function DirectoryView() {
         spacing={2}
         sx={{
           px: { xs: 2, sm: 4 },
-          position: 'relative',
         }}
       >
         <Grid2 size={{ xs: 12 }}>
@@ -228,7 +227,17 @@ export default function DirectoryView() {
             )}
           </Breadcrumbs>
         </Grid2>
+      </Grid2>
 
+      <Grid2
+        container
+        spacing={2}
+        sx={{
+          px: { xs: 2, sm: 4 },
+          py: { xs: 4, sm: 2 },
+          position: 'relative',
+        }}
+      >
         {directoriesByParentId[directoryId]?.map((directory) => (
           <Grid2 size={{ xs: 6, md: 3, lg: 2 }} key={directory.id}>
             <DirectoryTile directory={directory} />
@@ -242,25 +251,26 @@ export default function DirectoryView() {
 
         {(loadingDirectories[directoryId] || loadingFiles[directoryId]) &&
           (!directoriesByParentId[directoryId] ||
-            !filesByDirectoryId[directoryId]) && <LoadingTile />}
+            !filesByDirectoryId[directoryId]) && (
+            <Grid2 size={{ xs: 6, md: 3, lg: 2 }}>
+              <LoadingTile />
+            </Grid2>
+          )}
 
         <Backdrop
-          sx={{
-            color: '#fff',
-            backgroundColor: 'background.default',
-            zIndex: 999999,
+          sx={(theme) => ({
+            color: 'text.primary',
+            zIndex: theme.zIndex.drawer - 1,
+            background: 'none',
+            backdropFilter: 'blur(4px)',
             position: 'absolute',
-          }}
+          })}
+          transitionDuration={200}
           open={
             loadingDirectories[directoryId] ||
             loadingFiles[directoryId] ||
             addDirectoryStatus.loading
           }
-          transitionDuration={{
-            appear: 0,
-            enter: 0,
-            exit: 100,
-          }}
         >
           <CircularProgress color="inherit" />
         </Backdrop>

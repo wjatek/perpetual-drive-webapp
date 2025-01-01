@@ -1,3 +1,4 @@
+'use client'
 import {
   Button,
   Dialog,
@@ -7,7 +8,7 @@ import {
   TextField,
   TextFieldProps,
 } from '@mui/material'
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 
 type PromptProps = {
   text: string

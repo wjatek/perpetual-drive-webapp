@@ -1,5 +1,4 @@
 'use client'
-import { File } from '@/types/models'
 import { Box, Card, CardContent, Grid2, Skeleton } from '@mui/material'
 
 export function LoadingTile() {

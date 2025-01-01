@@ -41,9 +41,9 @@ export function DirectoryTile({ directory }: DirectoryTileProps) {
   }
 
   const handleClick = () => {
-    const newParams = new URLSearchParams(searchParams.toString());
-    newParams.set('id', directory.id);
-    router.push(`?${newParams.toString()}`);
+    const newParams = new URLSearchParams(searchParams.toString())
+    newParams.set('id', directory.id)
+    router.push(`?${newParams.toString()}`)
   }
 
   return (
@@ -64,7 +64,7 @@ export function DirectoryTile({ directory }: DirectoryTileProps) {
           <FolderIcon sx={{ fontSize: 50, color: 'primary.main' }} />
         </Box>
         <CardContent>
-          <Typography fontSize={14} align="center" fontWeight='bolder' noWrap>
+          <Typography fontSize={14} align="center" fontWeight="bolder" noWrap>
             {directory.name}
           </Typography>
         </CardContent>
