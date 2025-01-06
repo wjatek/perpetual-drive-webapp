@@ -1,4 +1,6 @@
 import { ThemeProvider } from '@/context/themeContext'
+import { PopupProvider } from '@/hooks/usePopup'
+import { PromptProvider } from '@/hooks/usePrompt'
 import { StoreProvider } from '@/redux/StoreProvider'
 import '@fontsource/roboto/300.css'
 import '@fontsource/roboto/400.css'
@@ -27,7 +29,9 @@ export default function RootLayout({
             <AppRouterCacheProvider>
               <ThemeProvider>
                 <CssBaseline />
-                {children}
+                <PopupProvider>
+                  <PromptProvider>{children}</PromptProvider>
+                </PopupProvider>
               </ThemeProvider>
             </AppRouterCacheProvider>
           </StoreProvider>

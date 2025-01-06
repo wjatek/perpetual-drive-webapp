@@ -1,5 +1,6 @@
 'use client'
 import CircularProgressWithValue from '@/components/common/CircularProgressWithValue'
+import { usePopup } from '@/hooks/usePopup'
 import api from '@/lib/api'
 import {
   setFileDownloading,
@@ -39,6 +40,7 @@ export function FileTile({ file }: FileTileProps) {
   const { fileDownloading, fileDownloadingProgress } = useSelector(
     (state: RootState) => state.files
   )
+  const showPopup = usePopup()
 
   const handleContextMenu = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault()
@@ -50,7 +52,20 @@ export function FileTile({ file }: FileTileProps) {
     setAnchorEl(null)
   }
 
-  const handleClick = () => {}
+  const handleClick = async () => {
+    // TODO - for popup system testing only
+    console.log()
+    const selectedOption = await showPopup({
+      title: 'Popup',
+      message: 'Files preview is not implementet yet',
+      options: [
+        { value: true, text: 'OK' },
+        { value: false, text: 'Cancel' },
+      ],
+      closeable: false,
+    })
+    console.log('[Popup] Selected option:', selectedOption)
+  }
 
   const handleDownload = async () => {
     try {
