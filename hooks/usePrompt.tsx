@@ -21,6 +21,7 @@ import {
 type PromptConfig = {
   text: string
   inputConfig?: TextFieldProps
+  validation?: (value: string) => Promise<string | null> | string | null
 }
 
 type PromptContextType = {
@@ -36,6 +37,7 @@ export function PromptProvider({ children }: { children: ReactNode }) {
   >(null)
   const [isOpen, setIsOpen] = useState(false)
   const [value, setValue] = useState('')
+  const [error, setError] = useState<string | null>(null)
   const textFieldRef = useRef<HTMLInputElement | null>(null)
 
   const showPrompt = useCallback((config: PromptConfig) => {
@@ -43,6 +45,7 @@ export function PromptProvider({ children }: { children: ReactNode }) {
       setPromptConfig(config)
       setResolveCallback(() => resolve)
       setIsOpen(true)
+      setError(null)
     })
   }, [])
 
@@ -51,7 +54,19 @@ export function PromptProvider({ children }: { children: ReactNode }) {
     setIsOpen(false)
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    if (promptConfig?.validation) {
+      const validationError = await (typeof promptConfig.validation ===
+      'function'
+        ? promptConfig.validation(value)
+        : null)
+
+      if (validationError) {
+        setError(validationError)
+        return
+      }
+    }
+
     if (resolveCallback) resolveCallback(value)
     setIsOpen(false)
   }
@@ -97,11 +112,13 @@ export function PromptProvider({ children }: { children: ReactNode }) {
             fullWidth
             variant="standard"
             {...promptConfig?.inputConfig}
+            error={!!error}
+            helperText={error}
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button color="primary" onClick={handleSubmit}>
+          <Button color="primary" onClick={handleSubmit} disabled={!value.trim()}>
             OK
           </Button>
         </DialogActions>
