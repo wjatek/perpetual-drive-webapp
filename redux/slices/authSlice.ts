@@ -1,5 +1,6 @@
 import api from '@/lib/api'
 import { createSlice } from '@/redux/createAppSlice'
+import { ErrorResponse } from '@/types/errors'
 import { User } from '@/types/models'
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { addUser } from './usersSlice'
@@ -8,7 +9,7 @@ interface AuthState {
   user: User | null
   token: string | null
   loading: boolean
-  error: string | null
+  error: ErrorResponse | null
   isAuthenticated: boolean
 }
 
@@ -33,7 +34,10 @@ export const loginUser = createAsyncThunk(
 
       return response.data
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.error || 'Login failed')
+      const errorResponse: ErrorResponse = error.response?.data || {
+        message: 'Login failed',
+      }
+      return rejectWithValue(errorResponse)
     }
   }
 )
@@ -46,7 +50,10 @@ export const refreshAccessToken = createAsyncThunk(
 
       return response.data
     } catch (error: any) {
-      return rejectWithValue('Failed to refresh token')
+      const errorResponse: ErrorResponse = {
+        message: 'Failed to refresh token',
+      }
+      return rejectWithValue(errorResponse)
     }
   }
 )
@@ -57,8 +64,8 @@ export const logoutUser = createAsyncThunk(
     try {
       await api.post('/logout')
     } catch (error: any) {
-      console.dir(error)
-      return rejectWithValue('Failed to logout')
+      const errorResponse: ErrorResponse = { message: 'Failed to logout' }
+      return rejectWithValue(errorResponse)
     }
   }
 )
@@ -81,7 +88,7 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false
-        state.error = action.payload as string
+        state.error = action.payload as ErrorResponse
         state.isAuthenticated = false
       })
 

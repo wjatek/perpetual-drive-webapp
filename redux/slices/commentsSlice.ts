@@ -1,15 +1,15 @@
 import api from '@/lib/api'
-import { createSlice } from '@/redux/createAppSlice'
+import { ErrorResponse } from '@/types/errors'
 import { Comment } from '@/types/models'
-import { createAsyncThunk } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 interface CommentsState {
   commentsByPostId: { [key: string]: Comment[] }
   loading: { [key: string]: boolean }
-  error: string | null
+  error: ErrorResponse | null
   addCommentStatus: {
     loading: boolean
-    error: string | null
+    error: ErrorResponse | null
   }
 }
 
@@ -23,21 +23,41 @@ const initialState: CommentsState = {
   },
 }
 
-export const fetchComments = createAsyncThunk<Comment[], string>(
-  'comments/fetchComments',
-  async (postId) => {
+export const fetchComments = createAsyncThunk<
+  Comment[],
+  string,
+  { rejectValue: ErrorResponse }
+>('comments/fetchComments', async (postId, { rejectWithValue }) => {
+  try {
     const response = await api.get<Comment[]>(`/posts/${postId}/comments`)
     return response.data
+  } catch (error: any) {
+    const message = error.response?.data?.error || 'Failed to fetch comments'
+    const details = error.response?.data?.details || null
+    return rejectWithValue({ message, details })
   }
-)
+})
 
 export const createComment = createAsyncThunk<
   Comment,
-  { postId: string; comment: Pick<Comment, 'content'> }
->('comments/createComment', async ({ postId, comment }) => {
-  const response = await api.post<Comment>(`/posts/${postId}/comments`, comment)
-  return response.data
-})
+  { postId: string; comment: Pick<Comment, 'content'> },
+  { rejectValue: ErrorResponse }
+>(
+  'comments/createComment',
+  async ({ postId, comment }, { rejectWithValue }) => {
+    try {
+      const response = await api.post<Comment>(
+        `/posts/${postId}/comments`,
+        comment
+      )
+      return response.data
+    } catch (error: any) {
+      const message = error.response?.data?.error || 'Failed to add comment'
+      const details = error.response?.data?.details || null
+      return rejectWithValue({ message, details })
+    }
+  }
+)
 
 const commentSlice = createSlice({
   name: 'comments',
@@ -58,7 +78,7 @@ const commentSlice = createSlice({
       .addCase(fetchComments.rejected, (state, action) => {
         const postId = action.meta.arg
         state.loading[postId] = false
-        state.error = action.error.message || 'Failed to fetch comments'
+        state.error = action.payload ?? null
       })
       .addCase(createComment.pending, (state) => {
         state.addCommentStatus.loading = true
@@ -72,11 +92,13 @@ const commentSlice = createSlice({
         state.commentsByPostId[postId].push(action.payload)
         state.addCommentStatus.loading = false
       })
-      .addCase(createComment.rejected, (state, action) => {
-        state.addCommentStatus.loading = false
-        state.addCommentStatus.error =
-          action.error.message || 'Failed to add comment'
-      })
+      .addCase(
+        createComment.rejected,
+        (state, action: PayloadAction<ErrorResponse | undefined>) => {
+          state.addCommentStatus.loading = false
+          state.addCommentStatus.error = action.payload ?? null
+        }
+      )
   },
 })
 

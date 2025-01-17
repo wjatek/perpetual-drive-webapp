@@ -1,12 +1,13 @@
 import api from '@/lib/api'
 import { createSlice } from '@/redux/createAppSlice'
+import { ErrorResponse } from '@/types/errors'
 import { User } from '@/types/models'
 import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 
 interface UsersState {
   usersById: { [key: string]: User }
   loading: { [key: string]: boolean }
-  error: string | null
+  error: ErrorResponse | null
 }
 
 const initialState: UsersState = {
@@ -46,7 +47,8 @@ const usersSlice = createSlice({
       .addCase(fetchUser.rejected, (state, action) => {
         const id = action.meta.arg
         state.loading[id] = false
-        state.error = action.error.message || 'Failed to fetch comments'
+        const errorResponse = action.error as ErrorResponse
+        state.error = errorResponse
       })
   },
 })

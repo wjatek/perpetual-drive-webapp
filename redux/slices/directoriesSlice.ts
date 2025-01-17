@@ -1,16 +1,17 @@
 import api from '@/lib/api'
 import { createSlice } from '@/redux/createAppSlice'
+import { ErrorResponse } from '@/types/errors'
 import { Directory } from '@/types/models'
 import { createAsyncThunk } from '@reduxjs/toolkit'
 
 interface DirectoriesState {
   directoriesByParentId: { [key: string | '']: Directory[] }
   loading: { [key: string | '']: boolean }
-  error: string | null
+  error: ErrorResponse | null
   directoryPath: { [key: string]: Pick<Directory, 'id' | 'name'>[] }
   addDirectoryStatus: {
     loading: boolean
-    error: string | null
+    error: ErrorResponse | null
   }
 }
 
@@ -69,7 +70,8 @@ const directoriesSlice = createSlice({
       .addCase(fetchDirectories.rejected, (state, action) => {
         const id = action.meta.arg
         state.loading[id || ''] = false
-        state.error = action.error.message || 'Failed to fetch directories'
+        const errorResponse = action.error as ErrorResponse
+        state.error = errorResponse
       })
 
       .addCase(createDirectory.pending, (state) => {
@@ -79,13 +81,14 @@ const directoriesSlice = createSlice({
       .addCase(createDirectory.fulfilled, (state, action) => {
         const directory = action.payload
         if (!state.directoriesByParentId[directory.parentId || ''])
+          state.directoriesByParentId[directory.parentId || ''] = []
         state.directoriesByParentId[directory.parentId || ''].unshift(directory)
         state.addDirectoryStatus.loading = false
       })
       .addCase(createDirectory.rejected, (state, action) => {
         state.addDirectoryStatus.loading = false
-        state.addDirectoryStatus.error =
-          action.error.message || 'Failed to create directory'
+        const errorResponse: ErrorResponse = action.error as ErrorResponse
+        state.addDirectoryStatus.error = errorResponse
       })
   },
 })

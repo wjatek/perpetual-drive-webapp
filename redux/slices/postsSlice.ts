@@ -1,19 +1,20 @@
 import api from '@/lib/api'
 import { createSlice } from '@/redux/createAppSlice'
+import { ErrorResponse } from '@/types/errors'
 import { Post } from '@/types/models'
 import { createAsyncThunk } from '@reduxjs/toolkit'
 
 interface PostsState {
   list: Post[]
   status: string // TODO change to loading flag
-  error: string | null
+  error: ErrorResponse | null
   addPostStatus: {
     loading: boolean
-    error: string | null
+    error: ErrorResponse | null
   }
   likePostStatus: {
     loading: boolean
-    error: string | null
+    error: ErrorResponse | null
   }
 }
 
@@ -70,7 +71,9 @@ const postSlice = createSlice({
       })
       .addCase(fetchPosts.rejected, (state, action) => {
         state.status = 'failed'
-        state.error = action.error.message || 'Failed to fetch posts'
+        state.error = action.error.message
+          ? { message: action.error.message }
+          : { message: 'Failed to fetch posts' }
       })
 
       .addCase(createPost.pending, (state) => {
@@ -83,8 +86,9 @@ const postSlice = createSlice({
       })
       .addCase(createPost.rejected, (state, action) => {
         state.addPostStatus.loading = false
-        state.addPostStatus.error =
-          action.error.message || 'Failed to create post'
+        state.addPostStatus.error = action.error.message
+          ? { message: action.error.message }
+          : { message: 'Failed to create post' }
       })
 
       .addCase(toggleLike.pending, (state) => {
@@ -103,8 +107,9 @@ const postSlice = createSlice({
       })
       .addCase(toggleLike.rejected, (state, action) => {
         state.likePostStatus.loading = false
-        state.likePostStatus.error =
-          action.error.message || 'Failed to like post'
+        state.likePostStatus.error = action.error.message
+          ? { message: action.error.message }
+          : { message: 'Failed to like post' }
       })
   },
 })

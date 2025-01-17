@@ -125,7 +125,7 @@ export default function LoginPage() {
               width="100%"
               color="error.main"
             >
-              {error}
+              {error?.message}
             </Typography>
           </Box>
         </Box>

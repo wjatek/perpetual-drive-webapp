@@ -61,7 +61,7 @@ export default function CommentList({ postId }: CommentsProps) {
   if (error) {
     return (
       <Typography color="text.secondary">
-        Cannot load comments: {error}
+        Cannot load comments: {error?.message || String(error)}
       </Typography>
     )
   }

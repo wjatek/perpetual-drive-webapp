@@ -1,12 +1,13 @@
 import api from '@/lib/api'
 import { createSlice } from '@/redux/createAppSlice'
+import { ErrorResponse } from '@/types/errors'
 import { File } from '@/types/models'
 import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 
 interface FilessState {
   filesByDirectoryId: { [key: string | '']: File[] }
   loading: { [key: string | '']: boolean }
-  error: string | null
+  error: ErrorResponse | null
   fileDownloading: { [key: string | '']: boolean }
   fileDownloadingProgress: { [key: string | '']: number }
 }
@@ -20,7 +21,7 @@ const initialState: FilessState = {
 }
 
 export const fetchFiles = createAsyncThunk<File[], string | null>(
-  'users/fetchFiles',
+  'files/fetchFiles',
   async (id) => {
     const response = await api.get<File[]>(`/files?directoryId=${id || ''}`)
     return response.data
@@ -62,7 +63,8 @@ const filesSlice = createSlice({
       .addCase(fetchFiles.rejected, (state, action) => {
         const id = action.meta.arg
         state.loading[id || ''] = false
-        state.error = action.error.message || 'Failed to fetch files'
+        const errorResponse = action.error as ErrorResponse
+        state.error = errorResponse
       })
   },
 })
