@@ -1,5 +1,6 @@
 'use client'
 import ProgressBar from '@/components/common/ProgressBar'
+import { usePrompt } from '@/hooks/usePrompt'
 import api from '@/lib/api'
 import {
   createDirectory,
@@ -23,7 +24,6 @@ import { unwrapResult } from '@reduxjs/toolkit'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Prompt from '../common/Prompt'
 import { DirectoryTile } from './DirectoryTile'
 import { FileTile } from './FileTile'
 
@@ -31,11 +31,11 @@ export default function DirectoryView() {
   const [file, setFile] = useState<File | null>(null)
   const [uploading, setUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
-  const [newDirectoryPromptOpen, setNewDirectoryPromptOpen] = useState(false)
 
   const router = useRouter()
   const searchParams = useSearchParams()
   const dispatch = useDispatch<Dispatch>()
+  const showPrompt = usePrompt()
   const {
     directoriesByParentId,
     directoryPath,
@@ -115,8 +115,17 @@ export default function DirectoryView() {
     loadContent(directoryId)
   }
 
-  const handleNewDirectoryClick = () => {
-    setNewDirectoryPromptOpen(true)
+  const handleNewDirectoryClick = async () => {
+    const directoryName = await showPrompt({
+      text: 'Directory name',
+      inputConfig: {
+        placeholder: 'Enter directory name',
+      },
+    })
+
+    if (directoryName) {
+      handleCreateDirectory(directoryName)
+    }
   }
 
   const handleCreateDirectory = async (value: string) => {
@@ -297,13 +306,6 @@ export default function DirectoryView() {
           <CircularProgress color="inherit" />
         </Backdrop>
       </Grid2>
-
-      <Prompt
-        text="Directory name"
-        open={newDirectoryPromptOpen}
-        onClose={() => setNewDirectoryPromptOpen(false)}
-        onSubmit={(value) => handleCreateDirectory(value)}
-      />
 
       <input
         type="file"
